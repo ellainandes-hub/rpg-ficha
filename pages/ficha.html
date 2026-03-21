@@ -1,0 +1,2222 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>Ficha</title>
+  <link rel="stylesheet" href="../Css/style.css">
+  <style>
+    :root{
+      --bg:#0b0b0c;
+      --panel:#121214;
+      --panel-2:#17171a;
+      --line:#2f2f35;
+      --text:#f5f5f5;
+      --muted:#a1a1aa;
+      --purple:#8b5cf6;
+      --green:#22c55e;
+      --yellow:#eab308;
+      --red:#ef4444;
+      --blue:#3b82f6;
+      --white:#ffffff;
+    }
+
+    *{ box-sizing:border-box; }
+
+    body{
+      margin:0;
+      background:var(--bg);
+      color:var(--text);
+      font-family:Arial, Helvetica, sans-serif;
+      overflow:hidden;
+    }
+
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button{
+      -webkit-appearance:none;
+      margin:0;
+    }
+
+    input[type=number]{
+      appearance:textfield;
+      -moz-appearance:textfield;
+    }
+
+    header{
+      background:#09090b;
+      border-bottom:1px solid var(--line);
+      padding:7px 12px;
+    }
+
+    header h1{
+      margin:0;
+      font-size:16px;
+    }
+
+    .ficha-shell{
+      height:calc(100vh - 40px);
+      padding:6px;
+    }
+
+    .ficha-box{
+      height:100%;
+      display:flex;
+      flex-direction:column;
+      gap:6px;
+      width:min(1720px, 99vw);
+      margin:0 auto;
+      background:var(--panel);
+      border:1px solid #232329;
+      border-radius:12px;
+      padding:6px;
+      overflow:hidden;
+    }
+
+    .topo-ficha{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:8px;
+      flex-wrap:wrap;
+    }
+
+    .topo-ficha h2{
+      margin:0;
+      font-size:18px;
+    }
+
+    .readonly{
+      margin:2px 0 0 0;
+      font-size:10px;
+      color:var(--muted);
+    }
+
+    button{
+      background:var(--panel-2);
+      color:var(--text);
+      border:1px solid #3b3b42;
+      border-radius:7px;
+      padding:4px 8px;
+      cursor:pointer;
+      font-size:10px;
+    }
+
+    button:hover{
+      border-color:var(--purple);
+    }
+
+    input, select, textarea{
+      width:100%;
+      background:#0f0f11;
+      color:var(--text);
+      border:1px solid #37373d;
+      border-radius:6px;
+      padding:4px 6px;
+      font-size:10px;
+    }
+
+    textarea{
+      resize:vertical;
+      min-height:42px;
+    }
+
+    .tabs{
+      display:flex;
+      gap:5px;
+      flex-wrap:wrap;
+    }
+
+    .tab-btn.active,
+    .subtab-btn.active{
+      border-color:var(--purple);
+      box-shadow:0 0 0 1px var(--purple) inset;
+    }
+
+    .page-panel{
+      display:none;
+      min-height:0;
+    }
+
+    .page-panel.active{
+      display:block;
+      height:100%;
+      min-height:0;
+    }
+
+    .ficha-main{
+      display:grid;
+      grid-template-columns:370px 1fr 320px;
+      gap:6px;
+      height:100%;
+      min-height:0;
+    }
+
+    .col{
+      display:grid;
+      gap:6px;
+      min-height:0;
+      overflow:hidden;
+    }
+
+    .card{
+      background:var(--panel-2);
+      border:1px solid #2b2b31;
+      border-radius:10px;
+      padding:6px;
+      overflow:hidden;
+    }
+
+    .card h3{
+      margin:0 0 4px 0;
+      font-size:11px;
+    }
+
+    .compact-grid{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:4px;
+    }
+
+    .compact-grid-3{
+      display:grid;
+      grid-template-columns:1fr 1fr auto;
+      gap:4px;
+    }
+
+    .linha{
+      display:flex;
+      align-items:center;
+      gap:4px;
+      margin-bottom:4px;
+    }
+
+    .linha label{
+      width:50px;
+      flex:0 0 50px;
+      font-size:9px;
+      color:#ddd;
+    }
+
+    .tiny{
+      font-size:9px;
+      color:var(--muted);
+      line-height:1.2;
+    }
+
+    .mini-btn{
+      padding:4px 6px;
+      font-size:9px;
+    }
+
+    .identidade-scroll{
+      overflow:auto;
+      max-height:190px;
+      padding-right:2px;
+    }
+
+    .img-row{
+      display:flex;
+      gap:6px;
+      align-items:flex-start;
+      margin-bottom:5px;
+    }
+
+    .img-box{
+      width:56px;
+      height:56px;
+      border-radius:8px;
+      overflow:hidden;
+      border:1px solid var(--line);
+      background:#0d0d0f;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      flex:0 0 56px;
+    }
+
+    .img-box img{
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      display:none;
+    }
+
+    .img-actions{
+      flex:1;
+      display:grid;
+      gap:4px;
+    }
+
+    .identidade-grid{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:4px;
+    }
+
+    .linha-id{
+      display:flex;
+      flex-direction:column;
+      gap:2px;
+    }
+
+    .linha-id-full{
+      grid-column:1 / -1;
+    }
+
+    .linha-id label{
+      font-size:9px;
+      color:var(--muted);
+      font-weight:700;
+    }
+
+    .linha-id input,
+    .linha-id select{
+      min-height:24px;
+    }
+
+    .poder-box{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:4px;
+      margin-top:5px;
+    }
+
+    .poder-item{
+      border:1px solid var(--line);
+      border-radius:7px;
+      padding:4px;
+      background:#131316;
+    }
+
+    .poder-item .lab{
+      font-size:8px;
+      color:var(--muted);
+      margin-bottom:2px;
+    }
+
+    .attr-box{
+      display:grid;
+      grid-template-columns:repeat(5, 1fr);
+      gap:4px;
+      margin-bottom:5px;
+    }
+
+    .attr{
+      border:1px solid #35353d;
+      border-radius:8px;
+      padding:4px;
+      text-align:center;
+      background:#101014;
+    }
+
+    .attr .lab{
+      font-size:8px;
+      color:#cfcfcf;
+      margin-bottom:2px;
+      font-weight:700;
+    }
+
+    .attr input, .attr select{
+      text-align:center;
+      padding:3px 2px;
+      font-size:11px;
+      border-color:#4b4b56;
+    }
+
+    .attr.nux-highlight,
+    .attr.lux-highlight{
+      border-color:var(--purple);
+      box-shadow:0 0 0 1px var(--purple) inset;
+      background:#121018;
+    }
+
+    .combat-grid{
+      display:grid;
+      grid-template-columns:1fr 1fr 1fr;
+      gap:4px;
+      margin-bottom:4px;
+    }
+
+    .combat-item{
+      border:1px solid var(--line);
+      border-radius:7px;
+      padding:4px;
+      background:#131316;
+    }
+
+    .combat-item .lab{
+      font-size:8px;
+      color:var(--muted);
+      margin-bottom:2px;
+    }
+
+    .combat-item input{
+      padding:4px 3px;
+      text-align:center;
+    }
+
+    .status-bars{
+      display:grid;
+      gap:5px;
+      max-height:270px;
+      overflow:auto;
+      padding-right:2px;
+    }
+
+    .status-block .title{
+      font-size:9px;
+      font-weight:700;
+      margin-bottom:2px;
+    }
+
+    .status-bar{
+      position:relative;
+      height:16px;
+      border-radius:6px;
+      overflow:hidden;
+      border:1px solid #3a3a3a;
+      background:#111;
+      margin-bottom:3px;
+    }
+
+    .status-fill{
+      height:100%;
+      width:0%;
+      transition:width .2s ease;
+    }
+
+    .vida-fill{ background:var(--red); }
+    .pm-fill{ background:var(--purple); }
+    .san-fill{ background:var(--blue); }
+
+    .status-text{
+      position:absolute;
+      inset:0;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size:9px;
+      font-weight:700;
+      color:white;
+      pointer-events:none;
+    }
+
+    .status-actions{
+      display:grid;
+      grid-template-columns:1fr auto;
+      gap:3px;
+      margin-bottom:3px;
+    }
+
+    .small-btn{
+      padding:3px 6px;
+      font-size:9px;
+    }
+
+    .list-compact{
+      display:grid;
+      gap:4px;
+      max-height:96px;
+      overflow:auto;
+      padding-right:2px;
+    }
+
+    .compact-entry{
+      border:1px solid #323238;
+      border-radius:7px;
+      background:#141418;
+      padding:4px 6px;
+      font-size:9px;
+      display:flex;
+      justify-content:space-between;
+      gap:6px;
+      align-items:center;
+    }
+
+    .compact-entry .left{
+      min-width:0;
+      overflow:hidden;
+      text-overflow:ellipsis;
+      white-space:nowrap;
+    }
+
+    .subtabs{
+      display:flex;
+      gap:5px;
+      flex-wrap:wrap;
+      margin-bottom:6px;
+    }
+
+    .subtab-panel{
+      display:none;
+      min-height:0;
+    }
+
+    .subtab-panel.active{
+      display:block;
+      min-height:0;
+    }
+
+    .inventory-layout{
+      display:grid;
+      grid-template-columns:250px 1fr;
+      gap:6px;
+      height:100%;
+      min-height:0;
+    }
+
+    .side-scroll,
+    .main-scroll{
+      min-height:0;
+      overflow:auto;
+      display:grid;
+      gap:6px;
+      align-content:start;
+      padding-right:2px;
+    }
+
+    .catalog-grid{
+      display:grid;
+      grid-template-columns:repeat(2, 1fr);
+      gap:4px;
+      max-height:520px;
+      overflow:auto;
+      padding-right:2px;
+    }
+
+    .catalog-item{
+      border:1px solid #33333a;
+      border-radius:8px;
+      padding:5px;
+      background:#141418;
+    }
+
+    .catalog-title{
+      font-size:10px;
+      font-weight:700;
+      margin-bottom:2px;
+    }
+
+    .catalog-sub{
+      font-size:9px;
+      color:#d8b4fe;
+      line-height:1.15;
+      white-space:pre-line;
+      margin-bottom:4px;
+    }
+
+    .summary-list{
+      display:grid;
+      gap:4px;
+      max-height:100%;
+      overflow:auto;
+      padding-right:2px;
+    }
+
+    .summary-card{
+      border:1px solid #323238;
+      border-radius:8px;
+      background:#151519;
+      overflow:hidden;
+    }
+
+    .summary-header{
+      display:grid;
+      grid-template-columns:1fr auto;
+      gap:6px;
+      align-items:center;
+      padding:5px;
+      cursor:pointer;
+    }
+
+    .summary-main{
+      display:flex;
+      gap:6px;
+      align-items:flex-start;
+      min-width:0;
+    }
+
+    .summary-thumb{
+      width:34px;
+      height:34px;
+      border-radius:6px;
+      overflow:hidden;
+      border:1px solid #3a3a3a;
+      background:#0f0f11;
+      flex:0 0 34px;
+    }
+
+    .summary-thumb img{
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      display:block;
+    }
+
+    .summary-title{
+      font-size:10px;
+      font-weight:700;
+      margin-bottom:1px;
+    }
+
+    .summary-sub{
+      font-size:9px;
+      color:#d8b4fe;
+      white-space:pre-line;
+      line-height:1.15;
+    }
+
+    .summary-actions{
+      display:flex;
+      gap:3px;
+      align-items:center;
+    }
+
+    .summary-body{
+      display:none;
+      padding:0 5px 5px 5px;
+      font-size:9px;
+      color:#ddd;
+      line-height:1.25;
+      white-space:pre-line;
+    }
+
+    .summary-card.open .summary-body{
+      display:block;
+    }
+
+    .delete-btn{
+      background:#2a1111;
+      border-color:#5f2222;
+      color:#fecaca;
+    }
+
+    .delete-btn:hover{
+      border-color:var(--red);
+    }
+
+    .form-card{
+      border:1px solid var(--line);
+      border-radius:8px;
+      padding:5px;
+      background:#141418;
+    }
+
+    .form-card h4{
+      margin:0 0 5px 0;
+      font-size:10px;
+    }
+
+    .cat-grid{
+      display:grid;
+      grid-template-columns:repeat(4, 1fr);
+      gap:3px;
+    }
+
+    .cat-grid label{
+      display:block;
+      font-size:8px;
+      color:#bbb;
+      margin-bottom:1px;
+    }
+
+    .cat-grid input{
+      padding:3px;
+      font-size:9px;
+      text-align:center;
+    }
+
+    .rit-top{
+      display:grid;
+      grid-template-columns:repeat(4, 1fr);
+      gap:3px;
+    }
+
+    .rit-top input{
+      padding:3px;
+      font-size:9px;
+      text-align:center;
+    }
+
+    .rit-form-scroll{
+      max-height:520px;
+      overflow:auto;
+      padding-right:2px;
+    }
+
+    .pericias-wrap{
+      height:100%;
+      overflow:auto;
+      padding-right:2px;
+    }
+
+    .pericias-compact{
+      display:grid;
+      grid-template-columns:1.7fr .38fr .50fr .30fr .30fr .35fr;
+      gap:3px;
+      align-items:center;
+      font-size:9px;
+    }
+
+    .pericia-head{
+      font-weight:700;
+      color:#ddd;
+      padding-bottom:4px;
+      border-bottom:1px solid #3a3a3a;
+      margin-bottom:4px;
+    }
+
+    .pericia-row{
+      padding:2px 3px;
+      border-bottom:1px solid #232328;
+    }
+
+    .pericia-row:nth-child(odd){
+      background:rgba(255,255,255,0.02);
+    }
+
+    .pericia-row:nth-child(even){
+      background:rgba(255,255,255,0.00);
+    }
+
+    .pericia-input{
+      border:none;
+      background:transparent;
+      padding:0;
+      height:auto;
+      font-size:9px;
+      text-align:center;
+      border-radius:0;
+      color:var(--white);
+    }
+
+    .pericia-select{
+      border:none;
+      background:transparent;
+      padding:0;
+      height:auto;
+      font-size:9px;
+      text-align:center;
+      border-radius:0;
+    }
+
+    .t0{ color:#cfcfcf; }
+    .t5{ color:var(--green); }
+    .t10{ color:var(--yellow); }
+    .t15{ color:var(--purple); }
+    .bonusColor{ color:var(--white); }
+
+    @media (max-width: 1200px){
+      body{ overflow:auto; }
+      .ficha-shell{ height:auto; }
+      .ficha-box{ height:auto; }
+      .ficha-main{ grid-template-columns:1fr; height:auto; }
+      .inventory-layout{ grid-template-columns:1fr; height:auto; }
+      .identidade-grid{ grid-template-columns:1fr; }
+      .linha-id-full{ grid-column:auto; }
+      .catalog-grid{ grid-template-columns:1fr; max-height:none; }
+    }
+  </style>
+</head>
+<body>
+<header>
+  <h1>Ficha do Personagem</h1>
+</header>
+
+<div class="ficha-shell">
+  <div class="ficha-box">
+    <div class="topo-ficha">
+      <div>
+        <h2 id="nome"></h2>
+        <p id="classe" class="readonly"></p>
+      </div>
+<div style="display:flex; gap:8px;">
+  <button onclick="voltarPersonagens()">Voltar</button>
+  <button onclick="compartilharFicha()">Compartilhar</button>
+</div>
+    </div>
+
+    <div class="tabs">
+      <button class="tab-btn active" data-tab="paginaFicha">Ficha</button>
+      <button class="tab-btn" data-tab="paginaP3">Habilidades / Rituais / Inventário</button>
+    </div>
+
+    <section id="paginaFicha" class="page-panel active">
+      <div class="ficha-main">
+        <div class="col">
+          <div class="card">
+            <h3>Identidade</h3>
+            <div class="identidade-scroll">
+              <div class="img-row">
+                <div class="img-box">
+                  <img id="charImagePreview" alt="Imagem do personagem">
+                </div>
+                <div class="img-actions">
+                  <input id="charImageInput" type="file" accept="image/*">
+                  <button class="mini-btn" onclick="removerImagemPersonagem()">Remover imagem</button>
+                </div>
+              </div>
+
+              <div class="identidade-grid">
+                <div class="linha-id linha-id-full">
+                  <label>PERSONAGEM</label>
+                  <input id="campoNome" type="text">
+                </div>
+                <div class="linha-id">
+                  <label>JOGADOR</label>
+                  <input id="campoJogador" type="text">
+                </div>
+                <div class="linha-id">
+                  <label>ORIGEM</label>
+                  <input id="campoConceito" type="text">
+                </div>
+                <div class="linha-id">
+                  <label>CLASSE</label>
+                  <select id="campoClasse">
+                    <option value="Combatente">Combatente</option>
+                    <option value="Especialista">Especialista</option>
+                    <option value="Véulita">Véulita</option>
+                  </select>
+                </div>
+                <div class="linha-id">
+                  <label>P. SUBLIME A</label>
+                  <input id="poderSublimeAuto" type="number" readonly>
+                </div>
+                <div class="linha-id">
+                  <label>P. SUBLIME M</label>
+                  <input id="poderSublimeManual" type="number">
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <h3>Atributos</h3>
+            <div class="attr-box">
+              <div class="attr"><div class="lab">DES</div><input id="des" type="number" min="0"></div>
+              <div class="attr"><div class="lab">ESS</div><input id="ess" type="number" min="0"></div>
+              <div class="attr"><div class="lab">FOR</div><input id="forca" type="number" min="0"></div>
+              <div class="attr"><div class="lab">INT</div><input id="int" type="number" min="0"></div>
+              <div class="attr"><div class="lab">VIG</div><input id="vig" type="number" min="0"></div>
+            </div>
+
+            <div class="attr-box" style="grid-template-columns:1fr 1fr;">
+              <div class="attr nux-highlight">
+                <div class="lab">NUX</div>
+                <select id="nux"></select>
+              </div>
+              <div class="attr lux-highlight">
+                <div class="lab">LUX</div>
+                <input id="lux" type="number" readonly>
+              </div>
+            </div>
+
+            <div class="combat-grid">
+              <div class="combat-item">
+                <div class="lab">Defesa</div>
+                <input id="defesaCampo" type="number">
+              </div>
+              <div class="combat-item">
+                <div class="lab">Esquiva</div>
+                <input id="esquivaCampo" type="number">
+              </div>
+              <div class="combat-item">
+                <div class="lab">Bloqueio</div>
+                <input id="bloqueioCampo" type="number" readonly>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <h3>Recursos</h3>
+            <div class="status-bars">
+              <div class="status-block">
+                <div class="title">VIDA</div>
+                <div class="status-bar">
+                  <div id="vidaFill" class="status-fill vida-fill"></div>
+                  <div id="vidaTexto" class="status-text">0/0</div>
+                </div>
+                <div class="compact-grid-3">
+                  <input id="vidaAtual" type="number" placeholder="Atual">
+                  <input id="vidaMax" type="number" placeholder="Máx">
+                  <div></div>
+                </div>
+                <div class="status-actions">
+                  <input id="vidaDano" type="number" placeholder="- Dano">
+                  <button class="small-btn" onclick="aplicarDano('vida')">OK</button>
+                </div>
+                <div class="status-actions">
+                  <input id="vidaCura" type="number" placeholder="+ Cura">
+                  <button class="small-btn" onclick="aplicarCura('vida')">OK</button>
+                </div>
+              </div>
+
+              <div class="status-block">
+                <div class="title">PM</div>
+                <div class="status-bar">
+                  <div id="pmFill" class="status-fill pm-fill"></div>
+                  <div id="pmTexto" class="status-text">0/0</div>
+                </div>
+                <div class="compact-grid-3">
+                  <input id="pmAtual" type="number" placeholder="Atual">
+                  <input id="pmMax" type="number" placeholder="Máx">
+                  <div></div>
+                </div>
+                <div class="status-actions">
+                  <input id="pmDano" type="number" placeholder="- Gasto">
+                  <button class="small-btn" onclick="aplicarDano('pm')">OK</button>
+                </div>
+                <div class="status-actions">
+                  <input id="pmCura" type="number" placeholder="+ Recupera">
+                  <button class="small-btn" onclick="aplicarCura('pm')">OK</button>
+                </div>
+              </div>
+
+              <div class="status-block">
+                <div class="title">SANIDADE</div>
+                <div class="status-bar">
+                  <div id="sanFill" class="status-fill san-fill"></div>
+                  <div id="sanTexto" class="status-text">0/0</div>
+                </div>
+                <div class="compact-grid-3">
+                  <input id="sanAtual" type="number" placeholder="Atual">
+                  <input id="sanMax" type="number" placeholder="Máx">
+                  <div></div>
+                </div>
+                <div class="status-actions">
+                  <input id="sanDano" type="number" placeholder="- Perda">
+                  <button class="small-btn" onclick="aplicarDano('san')">OK</button>
+                </div>
+                <div class="status-actions">
+                  <input id="sanCura" type="number" placeholder="+ Recupera">
+                  <button class="small-btn" onclick="aplicarCura('san')">OK</button>
+                </div>
+              </div>
+
+              <div class="linha"><label>Invent.</label><input id="inventarioInfo" type="text" readonly></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col">
+          <div class="card" style="height:100%; padding-bottom:4px;">
+            <h3>Perícias</h3>
+            <div class="pericias-wrap">
+              <div class="pericias-compact pericia-head">
+                <div>Perícia</div>
+                <div>Atr</div>
+                <div>Dado</div>
+                <div>T</div>
+                <div>B</div>
+                <div>Total</div>
+              </div>
+              <div id="listaPericias"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col">
+          <div class="card">
+            <h3>Habilidades resumidas</h3>
+            <div id="resumoHabilidades" class="list-compact"></div>
+          </div>
+
+          <div class="card">
+            <h3>Rituais resumidos</h3>
+            <div id="resumoRituais" class="list-compact"></div>
+          </div>
+
+          <div class="card">
+            <h3>Inventário resumido</h3>
+            <div id="resumoInventario" class="list-compact"></div>
+          </div>
+
+          <div class="card">
+            <h3>Proteções resumidas</h3>
+            <div id="resumoProtecoes" class="list-compact"></div>
+          </div>
+
+          <div class="card">
+            <h3>Resistências / Proficiências</h3>
+            <div class="linha"><label>Resist.</label><input id="resistencias" type="text"></div>
+            <div class="linha"><label>Prof.</label><input id="proficiencias" type="text"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="paginaP3" class="page-panel">
+      <div class="subtabs">
+        <button class="subtab-btn active" data-subtab="subHab">Habilidades</button>
+        <button class="subtab-btn" data-subtab="subRit">Rituais</button>
+        <button class="subtab-btn" data-subtab="subInv">Inventário</button>
+      </div>
+
+      <div id="subHab" class="subtab-panel active">
+        <div class="inventory-layout">
+          <div class="side-scroll">
+            <div class="form-card">
+              <h4>Adicionar Habilidade</h4>
+              <div class="linha"><label>Imagem</label><input id="habImagem" type="file" accept="image/*"></div>
+              <div class="linha"><label>Nome</label><input id="habNome" type="text"></div>
+              <div class="linha"><label>PM</label><input id="habPm" type="number" min="0"></div>
+              <div class="linha"><label>Desc.</label><textarea id="habDescricao"></textarea></div>
+              <button onclick="adicionarHabilidade()">Adicionar</button>
+            </div>
+          </div>
+
+          <div class="main-scroll">
+            <div class="card">
+              <h3>Habilidades</h3>
+              <div id="listaHabilidades" class="summary-list"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="subRit" class="subtab-panel">
+        <div class="inventory-layout">
+          <div class="side-scroll">
+            <div class="form-card">
+              <h4>DT / DTR</h4>
+              <div class="rit-top">
+                <div><div class="tiny">DT A</div><input id="dtAuto" type="number" readonly></div>
+                <div><div class="tiny">DT M</div><input id="dtManual" type="number"></div>
+                <div><div class="tiny">DTR A</div><input id="dtrAuto" type="number" readonly></div>
+                <div><div class="tiny">DTR M</div><input id="dtrManual" type="number"></div>
+              </div>
+            </div>
+
+            <div class="form-card">
+              <h4>Categorias</h4>
+              <div class="cat-grid">
+                <div><label>I</label><input id="ritCatI" type="number" min="0"></div>
+                <div><label>II</label><input id="ritCatII" type="number" min="0"></div>
+                <div><label>III</label><input id="ritCatIII" type="number" min="0"></div>
+                <div><label>IV</label><input id="ritCatIV" type="number" min="0"></div>
+              </div>
+            </div>
+
+            <div class="form-card">
+              <h4>Adicionar Ritual</h4>
+              <div class="rit-form-scroll">
+                <div class="linha"><label>Img</label><input id="ritImagem" type="file" accept="image/*"></div>
+                <div class="linha"><label>Nome</label><input id="ritNome" type="text"></div>
+
+                <div class="compact-grid">
+                  <div><div class="tiny">N</div><input id="ritPmNormal" type="number" min="0"></div>
+                  <div><div class="tiny">A+</div><input id="ritPmAprimorado" type="number" min="0"></div>
+                </div>
+
+                <div class="compact-grid" style="margin-top:4px;">
+                  <div><div class="tiny">V+</div><input id="ritPmVerdadeiro" type="number" min="0"></div>
+                  <div>
+                    <div class="tiny">Cat</div>
+                    <select id="ritCategoria">
+                      <option>I</option><option>II</option><option>III</option><option>IV</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="compact-grid" style="margin-top:4px;">
+                  <div>
+                    <div class="tiny">Exec</div>
+                    <select id="ritExecucao">
+                      <option>Completa</option><option>Padrão</option><option>Movimento</option><option>Reação</option>
+                    </select>
+                  </div>
+                  <div>
+                    <div class="tiny">Alc.</div>
+                    <select id="ritAlcance">
+                      <option>Curto</option><option>Médio</option><option>Longo</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="compact-grid" style="margin-top:4px;">
+                  <div><div class="tiny">Alvo</div><input id="ritAlvo" type="text"></div>
+                  <div><div class="tiny">Dur.</div><input id="ritDuracao" type="text"></div>
+                </div>
+
+                <div class="compact-grid" style="margin-top:4px;">
+                  <div><div class="tiny">Área</div><input id="ritArea" type="text"></div>
+                  <div><div class="tiny">Res.</div><input id="ritResistencia" type="text"></div>
+                </div>
+
+                <div class="compact-grid" style="margin-top:4px;">
+                  <div>
+                    <div class="tiny">Elemento</div>
+                    <select id="ritElemento">
+                      <option>Carnal</option><option>Eco</option><option>Ruptura</option><option>Existência</option>
+                    </select>
+                  </div>
+                  <div>
+                    <div class="tiny">Elo</div>
+                    <select id="ritElo">
+                      <option>I</option><option>II</option><option>III</option><option>IV</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div style="margin-top:4px;">
+                  <div class="tiny">Desc.</div>
+                  <textarea id="ritDescricao"></textarea>
+                </div>
+
+                <button style="margin-top:5px;" onclick="adicionarRitual()">Adicionar</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="main-scroll">
+            <div class="card">
+              <h3>Rituais</h3>
+              <div id="listaRituais" class="summary-list"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="subInv" class="subtab-panel">
+        <div class="subtabs">
+          <button class="subtab-btn active" data-invtab="invCatalogo">Catálogo</button>
+          <button class="subtab-btn" data-invtab="invArmas">Armas</button>
+          <button class="subtab-btn" data-invtab="invMunicoes">Munições</button>
+          <button class="subtab-btn" data-invtab="invProtecoes">Proteções</button>
+          <button class="subtab-btn" data-invtab="invCura">Cura</button>
+          <button class="subtab-btn" data-invtab="invGeral">Geral</button>
+          <button class="subtab-btn" data-invtab="invCorrompidos">Corrompidos</button>
+        </div>
+
+        <div class="inventory-layout">
+          <div class="side-scroll">
+            <div class="form-card">
+              <h4>Categorias</h4>
+              <div class="cat-grid">
+                <div><label>I</label><input id="itemCatI" type="number" min="0"></div>
+                <div><label>II</label><input id="itemCatII" type="number" min="0"></div>
+                <div><label>III</label><input id="itemCatIII" type="number" min="0"></div>
+                <div><label>IV</label><input id="itemCatIV" type="number" min="0"></div>
+              </div>
+            </div>
+
+            <div class="form-card">
+              <h4>Item Corrompido</h4>
+              <div class="linha"><label>Img</label><input id="corrImagem" type="file" accept="image/*"></div>
+              <div class="linha"><label>Nome</label><input id="corrNome" type="text"></div>
+              <div class="compact-grid">
+                <div><div class="tiny">Peso</div><input id="corrPeso" type="number" min="0"></div>
+                <div>
+                  <div class="tiny">Cat</div>
+                  <select id="corrCategoria">
+                    <option>I</option><option>II</option><option>III</option><option>IV</option>
+                  </select>
+                </div>
+              </div>
+              <div style="margin-top:4px;"><div class="tiny">Resumo</div><input id="corrResumo" type="text"></div>
+              <div style="margin-top:4px;"><div class="tiny">Desc.</div><textarea id="corrDescricao"></textarea></div>
+              <button style="margin-top:5px;" onclick="adicionarCorrompido()">Adicionar</button>
+            </div>
+          </div>
+
+          <div class="main-scroll">
+            <div id="invCatalogo" class="subtab-panel active">
+              <div class="card">
+                <h3>Catálogo</h3>
+                <div class="subtabs" style="margin-bottom:5px;">
+                  <button class="subtab-btn active" data-cattab="catArmas">Armas</button>
+                  <button class="subtab-btn" data-cattab="catMunicoes">Munições</button>
+                  <button class="subtab-btn" data-cattab="catProtecoes">Proteções</button>
+                  <button class="subtab-btn" data-cattab="catCura">Cura</button>
+                  <button class="subtab-btn" data-cattab="catGeral">Geral</button>
+                </div>
+
+                <div id="catArmas" class="subtab-panel active"><div id="catalogoArmas" class="catalog-grid"></div></div>
+                <div id="catMunicoes" class="subtab-panel"><div id="catalogoMunicoes" class="catalog-grid"></div></div>
+                <div id="catProtecoes" class="subtab-panel"><div id="catalogoProtecoes" class="catalog-grid"></div></div>
+                <div id="catCura" class="subtab-panel"><div id="catalogoCura" class="catalog-grid"></div></div>
+                <div id="catGeral" class="subtab-panel"><div id="catalogoGeral" class="catalog-grid"></div></div>
+              </div>
+            </div>
+
+            <div id="invArmas" class="subtab-panel"><div class="card"><h3>Armas</h3><div id="listaArmas" class="summary-list"></div></div></div>
+            <div id="invMunicoes" class="subtab-panel"><div class="card"><h3>Munições</h3><div id="listaMunicoes" class="summary-list"></div></div></div>
+            <div id="invProtecoes" class="subtab-panel"><div class="card"><h3>Proteções</h3><div id="listaProtecoes" class="summary-list"></div></div></div>
+            <div id="invCura" class="subtab-panel"><div class="card"><h3>Cura</h3><div id="listaCura" class="summary-list"></div></div></div>
+            <div id="invGeral" class="subtab-panel"><div class="card"><h3>Geral</h3><div id="listaGeral" class="summary-list"></div></div></div>
+            <div id="invCorrompidos" class="subtab-panel"><div class="card"><h3>Corrompidos</h3><div id="listaCorrompidos" class="summary-list"></div></div></div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+</div>
+
+<script src="../js/ficha-preload.js"></script>
+<script src="../js/ficha-sync.js"></script>
+
+<script>
+  const personagens = JSON.parse(localStorage.getItem("personagens")) || [];
+  const idAtual = Number(localStorage.getItem("personagemAtual"));
+  let personagem = personagens[idAtual];
+
+  if (!personagem) {
+    alert("Nenhum personagem encontrado.");
+    window.location.href = "personagens.html";
+  }
+
+  const CATALOGO_ARMAS = [
+    { nome:"Arco", categoria:"0", peso:1, resumo:"1d6 | x2", detalhes:"Tipo: Perfuração\nEmpunhadura: Duas Mãos\nAlcance: Média", ammoType:null },
+    { nome:"Bastão de Beisebol", categoria:"0", peso:2, resumo:"1d8 | x2", detalhes:"Tipo: Impacto\nEmpunhadura: Duas Mãos\nAlcance: Curto", ammoType:null },
+    { nome:"Fuzil de Caça", categoria:"I", peso:2, resumo:"2d8 | 19/x3", detalhes:"Tipo: Balístico\nEmpunhadura: Duas Mãos\nAlcance: Médio\nMunição: Média\nCapacidade: 8", ammoType:"Média" },
+    { nome:"Fuzil de Precisão", categoria:"III", peso:2, resumo:"2d10 | 19/x3", detalhes:"Tipo: Balístico\nEmpunhadura: Duas Mãos\nAlcance: Longo\nMunição: Pesada\nCapacidade: 5", ammoType:"Pesada" },
+    { nome:"Fuzil de Assalto", categoria:"II", peso:2, resumo:"2d10 | 19/x3", detalhes:"Tipo: Balístico\nEmpunhadura: Duas Mãos\nAlcance: Médio\nMunição: Média\nCapacidade: 30", ammoType:"Média" },
+    { nome:"Lança-Granadas", categoria:"III", peso:3, resumo:"10d8 | 19/x3", detalhes:"Tipo: Fogo/Impacto\nEmpunhadura: Duas Mãos\nAlcance: Médio\nMunição: Granada", ammoType:"Granada" },
+    { nome:"Lança-Chamas", categoria:"III", peso:3, resumo:"6d6 | 19/x3", detalhes:"Tipo: Fogo\nEmpunhadura: Duas Mãos\nAlcance: Curto\nMunição: Combustível", ammoType:"Combustível" },
+    { nome:"Metralhadora", categoria:"III", peso:3, resumo:"2d12 | 18/x3", detalhes:"Tipo: Balístico\nEmpunhadura: Duas Mãos\nAlcance: Médio\nMunição: Pesada", ammoType:"Pesada" },
+    { nome:"Pistola", categoria:"I", peso:1, resumo:"1d12 | 19/x2", detalhes:"Tipo: Balístico\nEmpunhadura: Uma Mão\nAlcance: Curto\nMunição: Leves\nCapacidade: 15", ammoType:"Leves" },
+    { nome:"Revolver", categoria:"I", peso:1, resumo:"1d8 | x2", detalhes:"Tipo: Balístico\nEmpunhadura: Uma Mão\nAlcance: Curto\nMunição: Leves\nCapacidade: 6", ammoType:"Leves" },
+    { nome:"Shotgun", categoria:"I", peso:2, resumo:"4d6 | x3", detalhes:"Tipo: Balístico\nEmpunhadura: Duas Mãos\nAlcance: Curto\nMunição: Cartuchos\nCapacidade: 6", ammoType:"Cartuchos" },
+    { nome:"Submetralhadora", categoria:"II", peso:1, resumo:"2d6 | 19/x3", detalhes:"Tipo: Balístico\nEmpunhadura: Uma Mão\nAlcance: Médio\nMunição: Leves\nCapacidade: 30", ammoType:"Leves" },
+    { nome:"Cajado", categoria:"0", peso:1, resumo:"1d6/1d8 | x2", detalhes:"Tipo: Impacto\nEmpunhadura: Uma/Duas Mãos\nAlcance: Curto", ammoType:null },
+    { nome:"Canivete", categoria:"0", peso:1, resumo:"1d4 | x2", detalhes:"Tipo: Perfuração/Corte\nEmpunhadura: Uma Mão\nAlcance: Curto", ammoType:null },
+    { nome:"Faca de Caça", categoria:"I", peso:1, resumo:"1d6 | 19/x2", detalhes:"Tipo: Perfuração/Corte\nEmpunhadura: Uma Mão\nAlcance: Curto", ammoType:null },
+    { nome:"Machete", categoria:"0", peso:1, resumo:"1d8 | x2", detalhes:"Tipo: Corte\nEmpunhadura: Uma Mão\nAlcance: Curto", ammoType:null },
+    { nome:"Martelo", categoria:"0", peso:1, resumo:"1d6 | x2", detalhes:"Tipo: Impacto\nEmpunhadura: Uma Mão\nAlcance: Curto", ammoType:null },
+    { nome:"Acha", categoria:"I", peso:2, resumo:"1d12 | 19x3", detalhes:"Tipo: Corte\nEmpunhadura: Duas Mãos\nAlcance: Curto", ammoType:null },
+    { nome:"Arco Composto", categoria:"I", peso:2, resumo:"1d10 | x3", detalhes:"Tipo: Perfuração\nEmpunhadura: Duas Mãos\nAlcance: Média", ammoType:null },
+    { nome:"Bastada", categoria:"II", peso:2, resumo:"1d8/1d10 | x3", detalhes:"Tipo: Perfuração/Corte\nEmpunhadura: Uma/Duas Mãos\nAlcance: Curto", ammoType:null },
+    { nome:"Estoque", categoria:"II", peso:2, resumo:"1d6+1d4 / 1d8+1d6", detalhes:"Tipo: Perfuração\nEmpunhadura: Uma Mão\nAlcance: Curto", ammoType:null },
+    { nome:"Maça", categoria:"II", peso:2, resumo:"2d6+1d4 / 3d6+2d4", detalhes:"Tipo: Impacto/Perfuração\nEmpunhadura: Uma/Duas Mãos\nAlcance: Curto", ammoType:null },
+    { nome:"Marreta", categoria:"I", peso:2, resumo:"3d4 | x2", detalhes:"Tipo: Impacto\nEmpunhadura: Duas Mãos\nAlcance: Curto", ammoType:null },
+    { nome:"Nunchaku", categoria:"I", peso:1, resumo:"2d8 | x2", detalhes:"Tipo: Impacto\nEmpunhadura: Duas Mãos\nAlcance: Curto", ammoType:null },
+    { nome:"Odachi", categoria:"II", peso:1, resumo:"1d10+1d6 | x3", detalhes:"Tipo: Corte/Perfuração\nEmpunhadura: Duas Mãos\nAlcance: Curto", ammoType:null },
+    { nome:"Zweihänder", categoria:"III", peso:3, resumo:"2d10+1d8 | 19x3", detalhes:"Tipo: Corte/Perfuração\nEmpunhadura: Duas Mãos\nAlcance: Curto", ammoType:null }
+  ];
+
+  const CATALOGO_MUNICOES = [
+    { nome:"Leves", categoria:"I", peso:1, resumo:"50 balas", detalhes:"1 caixa = 50 balas", totalUnidades:50, tipoMuni:"Leves" },
+    { nome:"Média", categoria:"I", peso:1, resumo:"40 balas", detalhes:"1 caixa = 40 balas", totalUnidades:40, tipoMuni:"Média" },
+    { nome:"Pesada", categoria:"I", peso:1, resumo:"20 balas", detalhes:"1 caixa = 20 balas", totalUnidades:20, tipoMuni:"Pesada" },
+    { nome:"Cartuchos", categoria:"I", peso:1, resumo:"25 cartuchos", detalhes:"1 caixa = 25 cartuchos", totalUnidades:25, tipoMuni:"Cartuchos" },
+    { nome:"Granada", categoria:"II", peso:2, resumo:"6 granadas", detalhes:"1 estojo = 6 granadas", totalUnidades:6, tipoMuni:"Granada" },
+    { nome:"Combustível", categoria:"II", peso:2, resumo:"12 cargas", detalhes:"1 cilindro = 12 cargas", totalUnidades:12, tipoMuni:"Combustível" }
+  ];
+
+  const CATALOGO_PROTECOES = [
+    { nome:"Leve", categoria:"I", peso:2, resumo:"Defesa +5", detalhes:"Proteção leve", protecaoBonus:5 },
+    { nome:"Pesada", categoria:"II", peso:5, resumo:"Defesa +10", detalhes:"Proteção pesada", protecaoBonus:10 },
+    { nome:"Escudo", categoria:"0", peso:1, resumo:"Defesa +2", detalhes:"Escudo", protecaoBonus:2 }
+  ];
+
+  const CATALOGO_CURA = [
+    { nome:"Antídotos Genéricos", categoria:"II", peso:1, resumo:"2d8", detalhes:"Remove envenenado por 5h" },
+    { nome:"Bandagem", categoria:"0", peso:1, resumo:"1d10 + INT", detalhes:"Ferimentos menores" },
+    { nome:"Bolsa com Medicamentos Gerais", categoria:"0", peso:1, resumo:"1d10", detalhes:"5 usos" },
+    { nome:"Injeção de Adrenalina", categoria:"I", peso:0, resumo:"1d4", detalhes:"1 uso" },
+    { nome:"Kit de Fratura", categoria:"I", peso:2, resumo:"2d8", detalhes:"3 usos" },
+    { nome:"Kit de Impacto", categoria:"0", peso:1, resumo:"1d8", detalhes:"Spray para dor" },
+    { nome:"Kit de Queimadura", categoria:"I", peso:1, resumo:"3d6", detalhes:"3 usos" },
+    { nome:"Kit de Sutura", categoria:"I", peso:1, resumo:"2d6 + INT", detalhes:"Pré-req: medicina" },
+    { nome:"Medkit Avançado", categoria:"II", peso:3, resumo:"2d10 + INT", detalhes:"5 usos totais" }
+  ];
+
+  const CATALOGO_GERAL = [
+    { nome:"Algemas", categoria:"I", peso:1, resumo:"Prende alvo", detalhes:"Impede o uso das mãos" },
+    { nome:"Arma Sinalizadora", categoria:"I", peso:1, resumo:"Sinalização", detalhes:"Dispara sinalizadores" },
+    { nome:"Bandoleira", categoria:"I", peso:0, resumo:"Acesso rápido", detalhes:"Carrega munições ou pequenos equipamentos" },
+    { nome:"Bússola", categoria:"0", peso:0, resumo:"+5 Sobrevivência", detalhes:"Localização por coordenadas" },
+    { nome:"Carregador Portátil", categoria:"0", peso:1, resumo:"Recarrega eletrônicos", detalhes:"Para rádios, GPS, drones" },
+    { nome:"Corda", categoria:"I", peso:1, resumo:"Escalada", detalhes:"Escalada, amarração, armadilhas" },
+    { nome:"Drone de Monitoramento", categoria:"III", peso:2, resumo:"+5 Tática/Investigação", detalhes:"Pré-req: tecnologia" },
+    { nome:"Gerador Portátil", categoria:"III", peso:3, resumo:"Energia", detalhes:"Dura 24h quando cheio" },
+    { nome:"GPS com Tela", categoria:"I", peso:1, resumo:"Navegação", detalhes:"Ajuda na localização" },
+    { nome:"Kit de Arrombamento", categoria:"I", peso:1, resumo:"+5 Crime", detalhes:"3 usos" },
+    { nome:"Kit de Ferramentas", categoria:"I", peso:1, resumo:"+5 Profissão", detalhes:"Reparo de máquinas" },
+    { nome:"Kit de Sobrevivência", categoria:"I", peso:2, resumo:"Kit completo", detalhes:"Panelas, manta, cantil, lona..." },
+    { nome:"Lanterna", categoria:"I", peso:1, resumo:"Iluminação", detalhes:"Pode sinalizar" },
+    { nome:"Mochila Militar", categoria:"I", peso:-2, resumo:"Aumenta carga", detalhes:"Mochila reforçada" },
+    { nome:"Monóculo de Visão Noturna", categoria:"II", peso:1, resumo:"+5 Investigação", detalhes:"Durante a noite" },
+    { nome:"Óculos de Visão Térmica", categoria:"II", peso:2, resumo:"Detecta calor", detalhes:"Ignora camuflagem" },
+    { nome:"Pé de Cabra", categoria:"0", peso:1, resumo:"Abrir à força", detalhes:"Portas, caixas, estruturas" },
+    { nome:"Purificador de Água", categoria:"I", peso:0, resumo:"Água potável", detalhes:"Torna água contaminada potável" },
+    { nome:"Rádio Comunicador", categoria:"I", peso:2, resumo:"Comunicação", detalhes:"Comunicação à distância" },
+    { nome:"Rede de Captura", categoria:"I", peso:2, resumo:"Prende alvo", detalhes:"Pontaria contra esquiva" },
+    { nome:"Serra Portátil", categoria:"I", peso:1, resumo:"Corta metal fino", detalhes:"Pequena serra portátil" }
+  ];
+
+  const PERICIAS_BASE = [
+    { nome: "Acrobacia", atributo: "des", label: "DES" },
+    { nome: "Adestramento", atributo: "ess", label: "ESS" },
+    { nome: "Artes", atributo: "ess", label: "ESS" },
+    { nome: "Atletismo", atributo: "forca", label: "FOR" },
+    { nome: "Charme", atributo: "ess", label: "ESS" },
+    { nome: "Ciência", atributo: "int", label: "INT" },
+    { nome: "Conhecimentos Gerais", atributo: "int", label: "INT" },
+    { nome: "Crime", atributo: "des", label: "DES" },
+    { nome: "Enganação", atributo: "ess", label: "ESS" },
+    { nome: "Fortitude", atributo: "vig", label: "VIG" },
+    { nome: "Furtividade", atributo: "des", label: "DES" },
+    { nome: "Iniciativa", atributo: "des", label: "DES" },
+    { nome: "Instinto", atributo: "ess", label: "ESS" },
+    { nome: "Intimidação", atributo: "ess", label: "ESS" },
+    { nome: "Investigação", atributo: "int", label: "INT" },
+    { nome: "Luta", atributo: "forca", label: "FOR" },
+    { nome: "Medicina", atributo: "int", label: "INT" },
+    { nome: "Persuasão", atributo: "ess", label: "ESS" },
+    { nome: "Pilotagem", atributo: "des", label: "DES" },
+    { nome: "Pontaria", atributo: "des", label: "DES" },
+    { nome: "Profissão", atributo: "int", label: "INT" },
+    { nome: "Reflexo", atributo: "des", label: "DES" },
+    { nome: "Saber Oculto", atributo: "int", label: "INT" },
+    { nome: "Sobrevivência", atributo: "int", label: "INT" },
+    { nome: "Tática", atributo: "int", label: "INT" },
+    { nome: "Tecnológica", atributo: "int", label: "INT" },
+    { nome: "Vontade", atributo: "ess", label: "ESS" }
+  ];
+
+  function voltarPersonagens() {
+    window.location.href = "personagens.html";
+  }
+
+  function numeroSeguro(valor, fallback = 0) {
+    const n = Number(valor);
+    return Number.isNaN(n) ? fallback : n;
+  }
+
+  function luxPorNux(nux) {
+    const valor = Number(nux) || 0;
+    if (valor >= 95) return 10;
+    if (valor >= 85) return 9;
+    if (valor >= 80) return 8;
+    if (valor >= 70) return 7;
+    if (valor >= 65) return 6;
+    if (valor >= 55) return 5;
+    if (valor >= 45) return 4;
+    if (valor >= 35) return 3;
+    if (valor >= 25) return 2;
+    if (valor >= 10) return 1;
+    return 0;
+  }
+
+  function nivelNux(nux) {
+    const valor = Number(nux) || 0;
+    if (valor >= 99) return 20;
+    if (valor < 5) return 0;
+    return Math.floor(valor / 5);
+  }
+
+  function tabelaEvolucaoPorClasse(classe) {
+    const tabelas = {
+      "Véulita": { 1:{pv:0,san:0,pm:2,sublime:0},2:{pv:0,san:3,pm:0,sublime:0},3:{pv:0,san:0,pm:2,sublime:0},4:{pv:2,san:0,pm:0,sublime:0},5:{pv:0,san:0,pm:0,sublime:1},6:{pv:5,san:0,pm:0,sublime:0},7:{pv:0,san:0,pm:0,sublime:1},8:{pv:0,san:7,pm:0,sublime:0},9:{pv:0,san:0,pm:0,sublime:1},10:{pv:16,san:18,pm:12,sublime:0} },
+      "Especialista": { 1:{pv:0,san:0,pm:2,sublime:0},2:{pv:0,san:3,pm:0,sublime:0},3:{pv:0,san:0,pm:2,sublime:0},4:{pv:2,san:0,pm:0,sublime:0},5:{pv:0,san:0,pm:0,sublime:1},6:{pv:5,san:0,pm:0,sublime:0},7:{pv:0,san:0,pm:0,sublime:1},8:{pv:0,san:7,pm:0,sublime:0},9:{pv:0,san:0,pm:0,sublime:1},10:{pv:16,san:18,pm:12,sublime:0} },
+      "Combatente": { 1:{pv:2,san:0,pm:0,sublime:0},2:{pv:5,san:0,pm:0,sublime:0},3:{pv:0,san:0,pm:2,sublime:0},4:{pv:1,san:0,pm:0,sublime:0},5:{pv:0,san:0,pm:0,sublime:1},6:{pv:10,san:0,pm:0,sublime:0},7:{pv:0,san:0,pm:0,sublime:1},8:{pv:0,san:2,pm:0,sublime:0},9:{pv:0,san:0,pm:0,sublime:1},10:{pv:20,san:12,pm:8,sublime:0} }
+    };
+    return tabelas[classe] || {};
+  }
+
+  function somarEvolucaoLux(classe, lux) {
+    const tabela = tabelaEvolucaoPorClasse(classe);
+    const resultado = { pv:0, san:0, pm:0, sublime:0 };
+    for (let i = 1; i <= lux; i++) {
+      if (tabela[i]) {
+        resultado.pv += tabela[i].pv || 0;
+        resultado.san += tabela[i].san || 0;
+        resultado.pm += tabela[i].pm || 0;
+        resultado.sublime += tabela[i].sublime || 0;
+      }
+    }
+    return resultado;
+  }
+
+  function dadosClasse(classe, atributos) {
+    const vig = Number(atributos.vig) || 0;
+    const ess = Number(atributos.ess) || 0;
+    const classes = {
+      "Combatente": { vidaInicial:20+vig, vidaPorNivel:4+vig, sanInicial:12, sanPorNivel:2+ess, pmInicial:6+ess, pmPorNivel:1+ess },
+      "Especialista": { vidaInicial:16+vig, vidaPorNivel:3+vig, sanInicial:16, sanPorNivel:3+ess, pmInicial:6+ess, pmPorNivel:2+ess },
+      "Véulita": { vidaInicial:12+vig, vidaPorNivel:2+vig, sanInicial:20, sanPorNivel:4+ess, pmInicial:10+ess, pmPorNivel:3+ess }
+    };
+    return classes[classe] || { vidaInicial:0, vidaPorNivel:0, sanInicial:0, sanPorNivel:0, pmInicial:0, pmPorNivel:0 };
+  }
+
+  function classesBase(classe, atributos, nux, lux) {
+    const nivel = nivelNux(nux);
+    const dados = dadosClasse(classe, atributos);
+    const bonusLux = somarEvolucaoLux(classe, lux);
+    return {
+      vidaMax: dados.vidaInicial + (nivel * dados.vidaPorNivel) + bonusLux.pv,
+      sanMax: dados.sanInicial + (nivel * dados.sanPorNivel) + bonusLux.san,
+      pmMax: dados.pmInicial + (nivel * dados.pmPorNivel) + bonusLux.pm,
+      poderSublime: bonusLux.sublime
+    };
+  }
+
+  function garantirEstrutura() {
+    personagem.atributos = personagem.atributos || { des:1, ess:1, forca:1, int:1, vig:1 };
+    personagem.recursos = personagem.recursos || { vidaAtual:0, vidaMax:0, pmAtual:0, pmMax:0, sanAtual:0, sanMax:0 };
+    personagem.combate = personagem.combate || { defesa:"", esquiva:"", protecaoNome:"", protecaoValor:0, outroDefesa:0 };
+    personagem.pericias = personagem.pericias || {};
+    personagem.habilidades = personagem.habilidades || [];
+    personagem.rituais = personagem.rituais || [];
+    personagem.inventario = personagem.inventario || {
+      categorias:{ I:0, II:0, III:0, IV:0 },
+      armas:[], municoes:[], protecoes:[], cura:[], geral:[], corrompidos:[]
+    };
+    personagem.ritualInfo = personagem.ritualInfo || {
+      categorias:{ I:0, II:0, III:0, IV:0 },
+      dtManual:"",
+      dtrManual:""
+    };
+    personagem.nux = personagem.nux ?? 0;
+    personagem.lux = personagem.lux ?? luxPorNux(personagem.nux);
+    personagem.poderSublimeManual = personagem.poderSublimeManual ?? "";
+    personagem.conceito = personagem.conceito ?? "";
+    personagem.jogador = personagem.jogador ?? "";
+    personagem.imagem = personagem.imagem ?? "";
+    personagem.resistencias = personagem.resistencias ?? "";
+    personagem.proficiencias = personagem.proficiencias ?? "";
+
+    PERICIAS_BASE.forEach(p => {
+      if (!personagem.pericias[p.nome]) {
+        personagem.pericias[p.nome] = {
+          atributo:p.atributo,
+          treinamento:0,
+          bonus:0
+        };
+      }
+    });
+  }
+
+  function valorAtributo(chave) {
+    return Number(personagem.atributos[chave]) || 0;
+  }
+
+  function dadoPericia(nome) {
+    const p = personagem.pericias[nome];
+    return `${valorAtributo(p.atributo)}d20`;
+  }
+
+  function totalPericia(nome) {
+    const p = personagem.pericias[nome];
+    return (Number(p.treinamento) || 0) + (Number(p.bonus) || 0);
+  }
+
+  function classeTreino(valor) {
+    if (valor === 5) return "t5";
+    if (valor === 10) return "t10";
+    if (valor === 15) return "t15";
+    return "t0";
+  }
+
+  function inventarioMaximo() {
+    const forca = Number(personagem.atributos.forca) || 0;
+    return forca === 0 ? 2 : forca * 5;
+  }
+
+  function recalcularPesoInventario() {
+    let total = 0;
+    ["armas","municoes","protecoes","cura","geral","corrompidos"].forEach(grupo => {
+      personagem.inventario[grupo].forEach(item => {
+        total += Number(item.peso) || 0;
+      });
+    });
+    personagem.pesoAtual = total;
+  }
+
+  function defesaAuto() {
+    return 10 + (Number(personagem.atributos.des) || 0) + (Number(personagem.combate.protecaoValor) || 0) + (Number(personagem.combate.outroDefesa) || 0);
+  }
+
+  function defesaFinal() {
+    const manual = personagem.combate.defesa;
+    return (manual === "" || manual === null || manual === undefined) ? defesaAuto() : (Number(manual) || 0);
+  }
+
+  function esquivaAuto() {
+    return defesaFinal() + totalPericia("Reflexo");
+  }
+
+  function esquivaFinal() {
+    const manual = personagem.combate.esquiva;
+    return (manual === "" || manual === null || manual === undefined) ? esquivaAuto() : (Number(manual) || 0);
+  }
+
+  function bloqueioFinal() {
+    return totalPericia("Fortitude");
+  }
+
+  function dtAuto() {
+    const ess = Number(personagem.atributos.ess) || 0;
+    const lux = Number(personagem.lux) || 0;
+    if (personagem.classe === "Véulita") return 10 + ess + lux;
+    return 10 + ess;
+  }
+
+  function dtrAuto() {
+    const ess = Number(personagem.atributos.ess) || 0;
+    const lux = Number(personagem.lux) || 0;
+    if (personagem.classe === "Véulita") return dtAuto() + lux;
+    return dtAuto() + ess;
+  }
+
+  function preencherOpcoesNux() {
+    const select = document.getElementById("nux");
+    select.innerHTML = "";
+    [0,5,10,15,20,25,30,35,40,45,50,55,60,65,70,75,80,85,90,95,99].forEach(v => {
+      const op = document.createElement("option");
+      op.value = v;
+      op.textContent = v + "%";
+      select.appendChild(op);
+    });
+  }
+
+  function atualizarBarras() {
+    const vidaPerc = personagem.recursos.vidaMax > 0 ? Math.max(0, (personagem.recursos.vidaAtual / personagem.recursos.vidaMax) * 100) : 0;
+    const pmPerc = personagem.recursos.pmMax > 0 ? Math.max(0, (personagem.recursos.pmAtual / personagem.recursos.pmMax) * 100) : 0;
+    const sanPerc = personagem.recursos.sanMax > 0 ? Math.max(0, (personagem.recursos.sanAtual / personagem.recursos.sanMax) * 100) : 0;
+
+    document.getElementById("vidaFill").style.width = `${Math.min(vidaPerc, 100)}%`;
+    document.getElementById("pmFill").style.width = `${Math.min(pmPerc, 100)}%`;
+    document.getElementById("sanFill").style.width = `${Math.min(sanPerc, 100)}%`;
+
+    document.getElementById("vidaTexto").innerText = `${personagem.recursos.vidaAtual}/${personagem.recursos.vidaMax}`;
+    document.getElementById("pmTexto").innerText = `${personagem.recursos.pmAtual}/${personagem.recursos.pmMax}`;
+    document.getElementById("sanTexto").innerText = `${personagem.recursos.sanAtual}/${personagem.recursos.sanMax}`;
+  }
+
+  function preencherImagemPersonagem() {
+    const img = document.getElementById("charImagePreview");
+    img.src = personagem.imagem || "";
+    img.style.display = personagem.imagem ? "block" : "none";
+  }
+
+  function renderizarPericias() {
+    const lista = document.getElementById("listaPericias");
+    lista.innerHTML = "";
+    PERICIAS_BASE.forEach(p => {
+      const item = personagem.pericias[p.nome];
+      const treino = Number(item.treinamento) || 0;
+      const total = totalPericia(p.nome);
+      lista.innerHTML += `
+        <div class="pericias-compact pericia-row">
+          <div>${p.nome}</div>
+          <div>${p.label}</div>
+          <div>${dadoPericia(p.nome)}</div>
+          <div>
+            <select class="pericia-select ${classeTreino(treino)}" onchange="alterarTreinamento('${p.nome}', this.value)">
+              <option value="0" ${treino === 0 ? "selected" : ""}>0</option>
+              <option value="5" ${treino === 5 ? "selected" : ""}>5</option>
+              <option value="10" ${treino === 10 ? "selected" : ""}>10</option>
+              <option value="15" ${treino === 15 ? "selected" : ""}>15</option>
+            </select>
+          </div>
+          <div><input class="pericia-input bonusColor" type="number" value="${item.bonus}" onchange="alterarBonus('${p.nome}', this.value)"></div>
+          <div class="${classeTreino(treino)}">${total}</div>
+        </div>
+      `;
+    });
+  }
+
+  function alterarTreinamento(nome, valor) {
+    personagem.pericias[nome].treinamento = Number(valor) || 0;
+    salvarTudo();
+  }
+
+  function alterarBonus(nome, valor) {
+    personagem.pericias[nome].bonus = Number(valor) || 0;
+    salvarTudo();
+  }
+
+  function lerImagemInput(input) {
+    return new Promise(resolve => {
+      const file = input.files?.[0];
+      if (!file) return resolve("");
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result);
+      reader.readAsDataURL(file);
+    });
+  }
+
+  async function aoEscolherImagemPersonagem(e) {
+    const base64 = await lerImagemInput(e.target);
+    if (!base64) return;
+    personagem.imagem = base64;
+    e.target.value = "";
+    salvarTudo();
+  }
+
+  function removerImagemPersonagem() {
+    personagem.imagem = "";
+    salvarTudo();
+  }
+
+  function aplicarDano(tipo) {
+    const valor = numeroSeguro(document.getElementById(tipo + "Dano").value, 0);
+    if (valor <= 0) return;
+    personagem.recursos[tipo + "Atual"] -= valor;
+    document.getElementById(tipo + "Dano").value = "";
+    salvarTudo();
+  }
+
+  function aplicarCura(tipo) {
+    const valor = numeroSeguro(document.getElementById(tipo + "Cura").value, 0);
+    if (valor <= 0) return;
+    personagem.recursos[tipo + "Atual"] += valor;
+    document.getElementById(tipo + "Cura").value = "";
+    salvarTudo();
+  }
+
+  function criarResumoCompacto(titulo, subtitulo) {
+    return `
+      <div class="compact-entry">
+        <div class="left">${titulo}</div>
+        <div>${subtitulo}</div>
+      </div>
+    `;
+  }
+
+  function resumoArma(item) {
+    const emp = (() => {
+      const m = (item.detalhes || "").match(/Empunhadura:\s*(.+)/i);
+      return m ? m[1] : "";
+    })();
+    const alc = (() => {
+      const m = (item.detalhes || "").match(/Alcance:\s*(.+)/i);
+      return m ? m[1] : "";
+    })();
+    const muni = item.ammoType ? ` • ${totalMunicao(item.ammoType)}` : "";
+    return `${item.resumo}${alc ? " • " + alc : ""}${emp ? " • " + emp : ""}${muni}`;
+  }
+
+  function renderizarResumoFicha() {
+    document.getElementById("resumoHabilidades").innerHTML =
+      personagem.habilidades.length
+        ? personagem.habilidades.slice(0, 6).map(h => criarResumoCompacto(h.nome, `${h.pm} PM`)).join("")
+        : `<div class="tiny">Nenhuma habilidade.</div>`;
+
+    document.getElementById("resumoRituais").innerHTML =
+      personagem.rituais.length
+        ? personagem.rituais.slice(0, 6).map(r => {
+            const resist = r.resistencia ? ` • ${r.resistencia}` : "";
+            return criarResumoCompacto(r.nome, `${r.categoria} • ${r.elemento}${resist}`);
+          }).join("")
+        : `<div class="tiny">Nenhum ritual.</div>`;
+
+    const inventarioResumo = [
+      ...personagem.inventario.armas,
+      ...personagem.inventario.protecoes,
+      ...personagem.inventario.cura,
+      ...personagem.inventario.geral,
+      ...personagem.inventario.corrompidos
+    ];
+
+    document.getElementById("resumoInventario").innerHTML =
+      inventarioResumo.length
+        ? inventarioResumo.slice(0, 8).map(i => {
+            let texto = i.resumo || "";
+            if (i.ammoType !== undefined) texto = resumoArma(i);
+            return criarResumoCompacto(i.nome, texto);
+          }).join("")
+        : `<div class="tiny">Inventário vazio.</div>`;
+
+    document.getElementById("resumoProtecoes").innerHTML =
+      personagem.inventario.protecoes.length
+        ? personagem.inventario.protecoes.map(p => criarResumoCompacto(p.nome, `${p.resumo}${personagem.combate.protecaoNome === p.nome ? " • equipada" : ""}`)).join("")
+        : `<div class="tiny">Nenhuma proteção.</div>`;
+  }
+
+  function criarSummaryCard(config) {
+    return `
+      <div class="summary-card ${config.open ? "open" : ""}">
+        <div class="summary-header" onclick="${config.toggleFn}">
+          <div class="summary-main">
+            ${config.image ? `<div class="summary-thumb"><img src="${config.image}" alt=""></div>` : ""}
+            <div>
+              <div class="summary-title">${config.title}</div>
+              <div class="summary-sub">${config.subtitle}</div>
+            </div>
+          </div>
+          <div class="summary-actions" onclick="event.stopPropagation()">
+            ${config.extraBtn || ""}
+            <button class="delete-btn" onclick="${config.deleteFn}">Remover</button>
+          </div>
+        </div>
+        <div class="summary-body">${config.body}</div>
+      </div>
+    `;
+  }
+
+  function toggleOpen(lista, i) {
+    lista[i].open = !lista[i].open;
+    salvarTudo();
+  }
+
+  function renderizarHabilidades() {
+    const el = document.getElementById("listaHabilidades");
+    el.innerHTML = "";
+    if (!personagem.habilidades.length) {
+      el.innerHTML = `<div class="tiny">Nenhuma habilidade cadastrada.</div>`;
+      return;
+    }
+    personagem.habilidades.forEach((h, i) => {
+      el.innerHTML += criarSummaryCard({
+        image: h.imagem,
+        title: h.nome,
+        subtitle: `Custo: ${h.pm} PM`,
+        body: h.descricao || "Sem descrição.",
+        open: !!h.open,
+        toggleFn: `toggleHabilidade(${i})`,
+        deleteFn: `removerHabilidade(${i})`,
+        extraBtn: `<button onclick="usarHabilidade(${i})">Usar</button>`
+      });
+    });
+  }
+
+  function toggleHabilidade(i) {
+    toggleOpen(personagem.habilidades, i);
+  }
+
+  async function adicionarHabilidade() {
+    const nome = document.getElementById("habNome").value.trim();
+    if (!nome) return alert("Digite o nome da habilidade.");
+    const imagem = await lerImagemInput(document.getElementById("habImagem"));
+    personagem.habilidades.push({
+      imagem,
+      nome,
+      pm: numeroSeguro(document.getElementById("habPm").value, 0),
+      descricao: document.getElementById("habDescricao").value.trim(),
+      open:false
+    });
+    ["habImagem","habNome","habPm","habDescricao"].forEach(id => document.getElementById(id).value = "");
+    salvarTudo();
+  }
+
+  function usarHabilidade(i) {
+    const custo = Number(personagem.habilidades[i].pm) || 0;
+    if ((Number(personagem.recursos.pmAtual) || 0) < custo) {
+      alert("PM insuficiente.");
+      return;
+    }
+    personagem.recursos.pmAtual -= custo;
+    salvarTudo();
+  }
+
+  function removerHabilidade(i) {
+    personagem.habilidades.splice(i, 1);
+    salvarTudo();
+  }
+
+  function custoRitualFinal(ritual, modo) {
+    const normal = Number(ritual.pmNormal) || 0;
+    const aprimorado = Number(ritual.pmAprimorado) || 0;
+    const verdadeiro = Number(ritual.pmVerdadeiro) || 0;
+    if (modo === "Aprimorado") return normal + aprimorado;
+    if (modo === "Verdadeiro") return normal + verdadeiro;
+    return normal;
+  }
+
+  function renderizarRituais() {
+    const el = document.getElementById("listaRituais");
+    el.innerHTML = "";
+    if (!personagem.rituais.length) {
+      el.innerHTML = `<div class="tiny">Nenhum ritual cadastrado.</div>`;
+      return;
+    }
+    personagem.rituais.forEach((r, i) => {
+      const body = `Cat.: ${r.categoria}
+Elem.: ${r.elemento}
+Elo: ${r.elo}
+Exec.: ${r.execucao}
+Alc.: ${r.alcance}
+Alvo: ${r.alvo}
+Dur.: ${r.duracao}
+Área: ${r.area}
+Res.: ${r.resistencia}
+
+N: ${r.pmNormal} | A+: ${r.pmAprimorado} | V+: ${r.pmVerdadeiro}
+
+${r.descricao || "Sem descrição."}`;
+      const extraBtn = `
+        <select id="modoRitual${i}" style="width:72px;">
+          <option>Normal</option>
+          <option>Aprimorado</option>
+          <option>Verdadeiro</option>
+        </select>
+        <button onclick="usarRitual(${i})">Usar</button>
+      `;
+      el.innerHTML += criarSummaryCard({
+        image: r.imagem,
+        title: r.nome,
+        subtitle: `${r.categoria} • ${r.elemento}${r.resistencia ? " • " + r.resistencia : ""}`,
+        body,
+        open: !!r.open,
+        toggleFn: `toggleRitual(${i})`,
+        deleteFn: `removerRitual(${i})`,
+        extraBtn
+      });
+    });
+  }
+
+  function toggleRitual(i) {
+    toggleOpen(personagem.rituais, i);
+  }
+
+  async function adicionarRitual() {
+    const nome = document.getElementById("ritNome").value.trim();
+    if (!nome) return alert("Digite o nome do ritual.");
+    const imagem = await lerImagemInput(document.getElementById("ritImagem"));
+    personagem.rituais.push({
+      imagem,
+      nome,
+      pmNormal: numeroSeguro(document.getElementById("ritPmNormal").value, 0),
+      pmAprimorado: numeroSeguro(document.getElementById("ritPmAprimorado").value, 0),
+      pmVerdadeiro: numeroSeguro(document.getElementById("ritPmVerdadeiro").value, 0),
+      categoria: document.getElementById("ritCategoria").value,
+      execucao: document.getElementById("ritExecucao").value,
+      alcance: document.getElementById("ritAlcance").value,
+      alvo: document.getElementById("ritAlvo").value.trim(),
+      duracao: document.getElementById("ritDuracao").value.trim(),
+      area: document.getElementById("ritArea").value.trim(),
+      resistencia: document.getElementById("ritResistencia").value.trim(),
+      elemento: document.getElementById("ritElemento").value,
+      elo: document.getElementById("ritElo").value,
+      descricao: document.getElementById("ritDescricao").value.trim(),
+      open:false
+    });
+    ["ritImagem","ritNome","ritPmNormal","ritPmAprimorado","ritPmVerdadeiro","ritAlvo","ritDuracao","ritArea","ritResistencia","ritDescricao"].forEach(id => document.getElementById(id).value = "");
+    salvarTudo();
+  }
+
+  function usarRitual(i) {
+    const modo = document.getElementById(`modoRitual${i}`)?.value || "Normal";
+    const custo = custoRitualFinal(personagem.rituais[i], modo);
+    if ((Number(personagem.recursos.pmAtual) || 0) < custo) {
+      alert("PM insuficiente.");
+      return;
+    }
+    personagem.recursos.pmAtual -= custo;
+    salvarTudo();
+  }
+
+  function removerRitual(i) {
+    personagem.rituais.splice(i, 1);
+    salvarTudo();
+  }
+
+  function fonteCatalogo(grupo) {
+    return {
+      armas: CATALOGO_ARMAS,
+      municoes: CATALOGO_MUNICOES,
+      protecoes: CATALOGO_PROTECOES,
+      cura: CATALOGO_CURA,
+      geral: CATALOGO_GERAL
+    }[grupo] || [];
+  }
+
+  function cardCatalogo(item, fn) {
+    return `
+      <div class="catalog-item">
+        <div class="catalog-title">${item.nome}</div>
+        <div class="catalog-sub">${item.resumo}\nP:${item.peso} • C:${item.categoria}</div>
+        <button onclick="${fn}">Adicionar</button>
+      </div>
+    `;
+  }
+
+  function renderCatalogos() {
+    document.getElementById("catalogoArmas").innerHTML =
+      CATALOGO_ARMAS.map((item, i) => cardCatalogo(item, `adicionarCatalogo('armas', ${i})`)).join("");
+    document.getElementById("catalogoMunicoes").innerHTML =
+      CATALOGO_MUNICOES.map((item, i) => cardCatalogo(item, `adicionarCatalogo('municoes', ${i})`)).join("");
+    document.getElementById("catalogoProtecoes").innerHTML =
+      CATALOGO_PROTECOES.map((item, i) => cardCatalogo(item, `adicionarCatalogo('protecoes', ${i})`)).join("");
+    document.getElementById("catalogoCura").innerHTML =
+      CATALOGO_CURA.map((item, i) => cardCatalogo(item, `adicionarCatalogo('cura', ${i})`)).join("");
+    document.getElementById("catalogoGeral").innerHTML =
+      CATALOGO_GERAL.map((item, i) => cardCatalogo(item, `adicionarCatalogo('geral', ${i})`)).join("");
+  }
+
+  function adicionarCatalogo(grupo, index) {
+    const item = JSON.parse(JSON.stringify(fonteCatalogo(grupo)[index]));
+    if (grupo === "municoes") {
+      const existente = personagem.inventario.municoes.find(m => m.tipoMuni === item.tipoMuni);
+      if (existente) {
+        existente.caixas = (Number(existente.caixas) || 1) + 1;
+        existente.quantidadeAtual = (Number(existente.quantidadeAtual) || 0) + (Number(item.totalUnidades) || 0);
+        salvarTudo();
+        return;
+      }
+      personagem.inventario.municoes.push({
+        nome: item.nome,
+        categoria: item.categoria,
+        peso: item.peso,
+        resumo: item.resumo,
+        detalhes: item.detalhes,
+        tipoMuni: item.tipoMuni,
+        caixas: 1,
+        quantidadeAtual: item.totalUnidades,
+        open:false
+      });
+    } else {
+      personagem.inventario[grupo].push({ ...item, open:false });
+      if (grupo === "protecoes" && !personagem.combate.protecaoNome) {
+        personagem.combate.protecaoNome = item.nome;
+        personagem.combate.protecaoValor = Number(item.protecaoBonus) || 0;
+      }
+    }
+    salvarTudo();
+  }
+
+  async function adicionarCorrompido() {
+    const nome = document.getElementById("corrNome").value.trim();
+    if (!nome) return alert("Digite o nome.");
+    const imagem = await lerImagemInput(document.getElementById("corrImagem"));
+    personagem.inventario.corrompidos.push({
+      imagem,
+      nome,
+      categoria: document.getElementById("corrCategoria").value,
+      peso: numeroSeguro(document.getElementById("corrPeso").value, 0),
+      resumo: document.getElementById("corrResumo").value.trim() || "Item corrompido",
+      detalhes: document.getElementById("corrDescricao").value.trim() || "Sem descrição.",
+      open:false
+    });
+    ["corrImagem","corrNome","corrPeso","corrResumo","corrDescricao"].forEach(id => document.getElementById(id).value = "");
+    salvarTudo();
+  }
+
+  function totalMunicao(tipo) {
+    const item = personagem.inventario.municoes.find(m => m.tipoMuni === tipo);
+    return item ? Number(item.quantidadeAtual) || 0 : 0;
+  }
+
+  function atualizarMunicaoPorTipo(tipo, novoValor) {
+    const item = personagem.inventario.municoes.find(m => m.tipoMuni === tipo);
+    if (!item) return;
+    item.quantidadeAtual = Math.max(0, Number(novoValor) || 0);
+    salvarTudo();
+  }
+
+  function toggleItem(grupo, i) {
+    personagem.inventario[grupo][i].open = !personagem.inventario[grupo][i].open;
+    salvarTudo();
+  }
+
+  function removerItem(grupo, i) {
+    const item = personagem.inventario[grupo][i];
+    if (grupo === "protecoes" && personagem.combate.protecaoNome === item.nome) {
+      personagem.combate.protecaoNome = "";
+      personagem.combate.protecaoValor = 0;
+    }
+    personagem.inventario[grupo].splice(i, 1);
+    salvarTudo();
+  }
+
+  function renderListaInventario(grupo, elId) {
+    const el = document.getElementById(elId);
+    const lista = personagem.inventario[grupo];
+    el.innerHTML = "";
+    if (!lista.length) {
+      el.innerHTML = `<div class="tiny">Nenhum item neste grupo.</div>`;
+      return;
+    }
+    lista.forEach((item, i) => {
+      let subtitulo = `${item.resumo}`;
+      let body = item.detalhes || "Sem detalhes.";
+      let extraBtn = "";
+      let extraBody = "";
+
+      if (grupo === "armas") {
+        subtitulo = resumoArma(item);
+        if (item.ammoType) {
+          extraBtn = `<input style="width:64px;" type="number" value="${totalMunicao(item.ammoType)}" onchange="atualizarMunicaoPorTipo('${item.ammoType}', this.value)">`;
+          extraBody = `\n\nMunição conectada: ${item.ammoType}`;
+        }
+      }
+
+      if (grupo === "municoes") {
+        subtitulo = `${item.resumo} • Atual:${item.quantidadeAtual}`;
+      }
+
+      if (grupo === "protecoes" || grupo === "cura" || grupo === "geral" || grupo === "corrompidos") {
+        subtitulo = item.resumo;
+      }
+
+      if (grupo === "cura") {
+        extraBtn = `<button onclick="alert('Uso manual do item: ${item.nome.replace(/'/g, "\\'")}')">Usar</button>`;
+      }
+
+      el.innerHTML += criarSummaryCard({
+        image: item.imagem,
+        title: item.nome,
+        subtitle: subtitulo,
+        body: `${body}${extraBody}`,
+        open: !!item.open,
+        toggleFn: `toggleItem('${grupo}', ${i})`,
+        deleteFn: `removerItem('${grupo}', ${i})`,
+        extraBtn
+      });
+    });
+  }
+
+  function renderizarInventario() {
+    renderListaInventario("armas", "listaArmas");
+    renderListaInventario("municoes", "listaMunicoes");
+    renderListaInventario("protecoes", "listaProtecoes");
+    renderListaInventario("cura", "listaCura");
+    renderListaInventario("geral", "listaGeral");
+    renderListaInventario("corrompidos", "listaCorrompidos");
+  }
+
+function salvarTudo() {
+  recalcularPesoInventario();
+  personagens[idAtual] = personagem;
+  localStorage.setItem("personagens", JSON.stringify(personagens));
+  salvarFichaNoBanco(personagem);
+  preencherTela();
+}
+
+  function preencherTela() {
+    const base = classesBase(personagem.classe, personagem.atributos, personagem.nux, personagem.lux);
+
+    document.getElementById("nome").innerText = personagem.nome || "Sem nome";
+    document.getElementById("classe").innerText = personagem.classe || "Sem classe";
+
+    document.getElementById("campoNome").value = personagem.nome || "";
+    document.getElementById("campoJogador").value = personagem.jogador || "";
+    document.getElementById("campoConceito").value = personagem.conceito || "";
+    document.getElementById("campoClasse").value = personagem.classe || "Combatente";
+
+    document.getElementById("des").value = personagem.atributos.des;
+    document.getElementById("ess").value = personagem.atributos.ess;
+    document.getElementById("forca").value = personagem.atributos.forca;
+    document.getElementById("int").value = personagem.atributos.int;
+    document.getElementById("vig").value = personagem.atributos.vig;
+
+    document.getElementById("nux").value = personagem.nux;
+    document.getElementById("lux").value = personagem.lux;
+
+    document.getElementById("vidaAtual").value = personagem.recursos.vidaAtual;
+    document.getElementById("vidaMax").value = personagem.recursos.vidaMax;
+    document.getElementById("pmAtual").value = personagem.recursos.pmAtual;
+    document.getElementById("pmMax").value = personagem.recursos.pmMax;
+    document.getElementById("sanAtual").value = personagem.recursos.sanAtual;
+    document.getElementById("sanMax").value = personagem.recursos.sanMax;
+
+    document.getElementById("defesaCampo").value = defesaFinal();
+    document.getElementById("esquivaCampo").value = esquivaFinal();
+    document.getElementById("bloqueioCampo").value = bloqueioFinal();
+
+    document.getElementById("inventarioInfo").value = `${personagem.pesoAtual || 0} / ${inventarioMaximo()}`;
+
+    document.getElementById("resistencias").value = personagem.resistencias || "";
+    document.getElementById("proficiencias").value = personagem.proficiencias || "";
+
+    document.getElementById("poderSublimeAuto").value = base.poderSublime;
+    document.getElementById("poderSublimeManual").value = personagem.poderSublimeManual || "";
+
+    document.getElementById("dtAuto").value = dtAuto();
+    document.getElementById("dtrAuto").value = dtrAuto();
+    document.getElementById("dtManual").value = personagem.ritualInfo.dtManual || "";
+    document.getElementById("dtrManual").value = personagem.ritualInfo.dtrManual || "";
+
+    document.getElementById("itemCatI").value = personagem.inventario.categorias.I ?? 0;
+    document.getElementById("itemCatII").value = personagem.inventario.categorias.II ?? 0;
+    document.getElementById("itemCatIII").value = personagem.inventario.categorias.III ?? 0;
+    document.getElementById("itemCatIV").value = personagem.inventario.categorias.IV ?? 0;
+
+    document.getElementById("ritCatI").value = personagem.ritualInfo.categorias.I ?? 0;
+    document.getElementById("ritCatII").value = personagem.ritualInfo.categorias.II ?? 0;
+    document.getElementById("ritCatIII").value = personagem.ritualInfo.categorias.III ?? 0;
+    document.getElementById("ritCatIV").value = personagem.ritualInfo.categorias.IV ?? 0;
+
+    preencherImagemPersonagem();
+    atualizarBarras();
+    renderizarPericias();
+    renderizarResumoFicha();
+    renderizarHabilidades();
+    renderizarRituais();
+    renderizarInventario();
+    renderCatalogos();
+  }
+
+  function configurarTabs() {
+    document.querySelectorAll(".tab-btn[data-tab]").forEach(btn => {
+      btn.addEventListener("click", () => {
+        document.querySelectorAll(".tab-btn[data-tab]").forEach(b => b.classList.remove("active"));
+        document.querySelectorAll(".page-panel").forEach(p => p.classList.remove("active"));
+        btn.classList.add("active");
+        document.getElementById(btn.dataset.tab).classList.add("active");
+      });
+    });
+
+    document.querySelectorAll(".subtab-btn[data-subtab]").forEach(btn => {
+      btn.addEventListener("click", () => {
+        document.querySelectorAll(".subtab-btn[data-subtab]").forEach(b => b.classList.remove("active"));
+        ["subHab","subRit","subInv"].forEach(id => document.getElementById(id).classList.remove("active"));
+        btn.classList.add("active");
+        document.getElementById(btn.dataset.subtab).classList.add("active");
+      });
+    });
+
+    document.querySelectorAll(".subtab-btn[data-invtab]").forEach(btn => {
+      btn.addEventListener("click", () => {
+        document.querySelectorAll(".subtab-btn[data-invtab]").forEach(b => b.classList.remove("active"));
+        ["invCatalogo","invArmas","invMunicoes","invProtecoes","invCura","invGeral","invCorrompidos"].forEach(id => {
+          document.getElementById(id).classList.remove("active");
+        });
+        btn.classList.add("active");
+        document.getElementById(btn.dataset.invtab).classList.add("active");
+      });
+    });
+
+    document.querySelectorAll(".subtab-btn[data-cattab]").forEach(btn => {
+      btn.addEventListener("click", () => {
+        document.querySelectorAll(".subtab-btn[data-cattab]").forEach(b => b.classList.remove("active"));
+        ["catArmas","catMunicoes","catProtecoes","catCura","catGeral"].forEach(id => {
+          document.getElementById(id).classList.remove("active");
+        });
+        btn.classList.add("active");
+        document.getElementById(btn.dataset.cattab).classList.add("active");
+      });
+    });
+  }
+
+  function configurarEventos() {
+    document.getElementById("charImageInput").addEventListener("change", aoEscolherImagemPersonagem);
+
+    document.getElementById("campoNome").addEventListener("input", e => { personagem.nome = e.target.value; salvarTudo(); });
+    document.getElementById("campoJogador").addEventListener("input", e => { personagem.jogador = e.target.value; salvarTudo(); });
+    document.getElementById("campoConceito").addEventListener("input", e => { personagem.conceito = e.target.value; salvarTudo(); });
+
+    document.getElementById("campoClasse").addEventListener("change", e => {
+      personagem.classe = e.target.value;
+      const base = classesBase(personagem.classe, personagem.atributos, personagem.nux, personagem.lux);
+      personagem.recursos.vidaAtual = base.vidaMax;
+      personagem.recursos.vidaMax = base.vidaMax;
+      personagem.recursos.pmAtual = base.pmMax;
+      personagem.recursos.pmMax = base.pmMax;
+      personagem.recursos.sanAtual = base.sanMax;
+      personagem.recursos.sanMax = base.sanMax;
+      salvarTudo();
+    });
+
+    document.getElementById("des").addEventListener("input", e => { personagem.atributos.des = Math.max(0, numeroSeguro(e.target.value, 1)); salvarTudo(); });
+    document.getElementById("ess").addEventListener("input", e => { personagem.atributos.ess = Math.max(0, numeroSeguro(e.target.value, 1)); salvarTudo(); });
+    document.getElementById("forca").addEventListener("input", e => { personagem.atributos.forca = Math.max(0, numeroSeguro(e.target.value, 1)); salvarTudo(); });
+    document.getElementById("int").addEventListener("input", e => { personagem.atributos.int = Math.max(0, numeroSeguro(e.target.value, 1)); salvarTudo(); });
+
+    document.getElementById("vig").addEventListener("input", e => {
+      personagem.atributos.vig = Math.max(0, numeroSeguro(e.target.value, 1));
+      const base = classesBase(personagem.classe, personagem.atributos, personagem.nux, personagem.lux);
+      personagem.recursos.vidaAtual = base.vidaMax;
+      personagem.recursos.vidaMax = base.vidaMax;
+      personagem.recursos.pmAtual = base.pmMax;
+      personagem.recursos.pmMax = base.pmMax;
+      personagem.recursos.sanAtual = base.sanMax;
+      personagem.recursos.sanMax = base.sanMax;
+      salvarTudo();
+    });
+
+    document.getElementById("nux").addEventListener("change", e => {
+      personagem.nux = numeroSeguro(e.target.value, 0);
+      personagem.lux = luxPorNux(personagem.nux);
+      const base = classesBase(personagem.classe, personagem.atributos, personagem.nux, personagem.lux);
+      personagem.recursos.vidaAtual = base.vidaMax;
+      personagem.recursos.vidaMax = base.vidaMax;
+      personagem.recursos.pmAtual = base.pmMax;
+      personagem.recursos.pmMax = base.pmMax;
+      personagem.recursos.sanAtual = base.sanMax;
+      personagem.recursos.sanMax = base.sanMax;
+      salvarTudo();
+    });
+
+    ["vidaAtual","vidaMax","pmAtual","pmMax","sanAtual","sanMax"].forEach(id => {
+      document.getElementById(id).addEventListener("input", e => {
+        personagem.recursos[id] = numeroSeguro(e.target.value, 0);
+        salvarTudo();
+      });
+    });
+
+    document.getElementById("defesaCampo").addEventListener("input", e => { personagem.combate.defesa = e.target.value; salvarTudo(); });
+    document.getElementById("esquivaCampo").addEventListener("input", e => { personagem.combate.esquiva = e.target.value; salvarTudo(); });
+
+    document.getElementById("resistencias").addEventListener("input", e => { personagem.resistencias = e.target.value; salvarTudo(); });
+    document.getElementById("proficiencias").addEventListener("input", e => { personagem.proficiencias = e.target.value; salvarTudo(); });
+
+    document.getElementById("poderSublimeManual").addEventListener("input", e => {
+      personagem.poderSublimeManual = e.target.value;
+      salvarTudo();
+    });
+
+    document.getElementById("dtManual").addEventListener("input", e => {
+      personagem.ritualInfo.dtManual = e.target.value;
+      salvarTudo();
+    });
+
+    document.getElementById("dtrManual").addEventListener("input", e => {
+      personagem.ritualInfo.dtrManual = e.target.value;
+      salvarTudo();
+    });
+
+    ["itemCatI","itemCatII","itemCatIII","itemCatIV"].forEach((id, idx) => {
+      const chave = ["I","II","III","IV"][idx];
+      document.getElementById(id).addEventListener("input", e => {
+        personagem.inventario.categorias[chave] = numeroSeguro(e.target.value, 0);
+        salvarTudo();
+      });
+    });
+
+    ["ritCatI","ritCatII","ritCatIII","ritCatIV"].forEach((id, idx) => {
+      const chave = ["I","II","III","IV"][idx];
+      document.getElementById(id).addEventListener("input", e => {
+        personagem.ritualInfo.categorias[chave] = numeroSeguro(e.target.value, 0);
+        salvarTudo();
+      });
+    });
+  }
+
+  garantirEstrutura();
+  configurarTabs();
+  configurarEventos();
+  preencherOpcoesNux();
+  preencherTela();
+
+async function compartilharFicha() {
+
+  const idBanco = personagem?.idBanco || Number(localStorage.getItem("personagemAtual"));
+
+  if (!idBanco && idBanco !== 0) {
+    alert("ID da ficha não encontrado.");
+    return;
+  }
+
+  try {
+
+    const resposta = await fetch(`http://localhost:3000/personagens/compartilhar/${idBanco}`, {
+      method: "POST"
+    });
+
+    const dados = await resposta.json();
+
+    if (!dados.sucesso) {
+      alert("Erro ao gerar link.");
+      return;
+    }
+
+    await navigator.clipboard.writeText(dados.link);
+
+    alert("Link de compartilhamento copiado:\n\n" + dados.link);
+
+  } catch (erro) {
+
+    console.error(erro);
+    alert("Erro ao gerar compartilhamento.");
+
+  }
+
+}
+
+</script>
+</body>
+</html>
+

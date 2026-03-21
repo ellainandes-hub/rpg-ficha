@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>Ficha Compartilhada</title>
+  <style>
+    body{
+      font-family: Arial, Helvetica, sans-serif;
+      background:#111;
+      color:#fff;
+      padding:20px;
+    }
+    .box{
+      max-width:900px;
+      margin:0 auto;
+      background:#1a1a1f;
+      border:1px solid #333;
+      border-radius:12px;
+      padding:20px;
+    }
+    h1,h2,h3{ margin-top:0; }
+    .grid{
+      display:grid;
+      grid-template-columns:repeat(2,1fr);
+      gap:12px;
+    }
+    .card{
+      background:#121216;
+      border:1px solid #2f2f35;
+      border-radius:10px;
+      padding:12px;
+    }
+    pre{
+      white-space:pre-wrap;
+      word-break:break-word;
+    }
+  </style>
+</head>
+<body>
+  <div class="box">
+    <h1 id="nome">Carregando...</h1>
+    <p id="classe"></p>
+
+    <div class="grid">
+      <div class="card">
+        <h3>Identidade</h3>
+        <div id="identidade"></div>
+      </div>
+
+      <div class="card">
+        <h3>Atributos</h3>
+        <div id="atributos"></div>
+      </div>
+
+      <div class="card">
+        <h3>Recursos</h3>
+        <div id="recursos"></div>
+      </div>
+
+      <div class="card">
+        <h3>Perícias</h3>
+        <div id="pericias"></div>
+      </div>
+
+      <div class="card">
+        <h3>Habilidades</h3>
+        <div id="habilidades"></div>
+      </div>
+
+      <div class="card">
+        <h3>Rituais</h3>
+        <div id="rituais"></div>
+      </div>
+
+      <div class="card">
+        <h3>Inventário</h3>
+        <div id="inventario"></div>
+      </div>
+    </div>
+  </div>
+
+  <script src="../js/visualizar.js"></script>
+</body>
+</html>
