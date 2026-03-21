@@ -1225,39 +1225,6 @@ async function carregarPersonagemDaAPI() {
 }
 
 
-
-async function salvarTudo() {
-
-  if (!personagemIdBanco) return;
-
-  try {
-
-    await fetch(`${API}/personagens/ficha/${personagemIdBanco}`, {
-
-      method: "PUT",
-
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${token}`
-      },
-
-      body: JSON.stringify({
-        nome: personagem.nome || "Personagem",
-        dados: personagem
-      })
-
-    });
-
-  } catch (erro) {
-
-    console.error("Erro ao salvar ficha:", erro);
-
-  }
-
-}
-
-
-
 // aplica dano
 function aplicarDano(tipo) {
 
@@ -1351,9 +1318,6 @@ function compartilharFicha() {
 }
 
 
-
-// inicia carregamento
-carregarPersonagemDaAPI();
 
   const CATALOGO_ARMAS = [
     { nome:"Arco", categoria:"0", peso:1, resumo:"1d6 | x2", detalhes:"Tipo: Perfuração\nEmpunhadura: Duas Mãos\nAlcance: Média", ammoType:null },
@@ -2146,6 +2110,15 @@ ${r.descricao || "Sem descrição."}`;
       });
     });
   }
+
+function renderizarInventario() {
+  renderListaInventario("armas", "listaArmas");
+  renderListaInventario("municoes", "listaMunicoes");
+  renderListaInventario("protecoes", "listaProtecoes");
+  renderListaInventario("cura", "listaCura");
+  renderListaInventario("geral", "listaGeral");
+  renderListaInventario("corrompidos", "listaCorrompidos");
+}
 
 async function salvarTudo() {
 
