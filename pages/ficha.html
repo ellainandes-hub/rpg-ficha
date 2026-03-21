@@ -1155,48 +1155,206 @@
 <script src="../js/ficha-sync.js"></script>
 
 <script>
+
 const API = "https://rpg-ficha-api.onrender.com";
+
 const token = localStorage.getItem("token");
 const idAtual = localStorage.getItem("personagemAtual");
 
-let personagem = null;
+let personagem = {};
+let personagemIdBanco = null;
 
 if (!token) {
   window.location.href = "../index.html";
 }
 
 if (!idAtual) {
-  alert("Nenhum personagem encontrado.");
+  alert("Nenhum personagem selecionado");
   window.location.href = "personagens.html";
 }
 
+
+
 async function carregarPersonagemDaAPI() {
+
   try {
+
     const resposta = await fetch(`${API}/personagens/ficha/${idAtual}`, {
       headers: {
-        Authorization: `Bearer ${token}`
+        "Authorization": `Bearer ${token}`
       }
     });
 
     if (!resposta.ok) {
-      alert("Nenhum personagem encontrado.");
+      alert("Personagem não encontrado");
       window.location.href = "personagens.html";
       return;
     }
 
-    personagem = await resposta.json();
+    const resultado = await resposta.json();
 
+    // dados da ficha ficam dentro de "dados"
+    personagem = resultado.dados || {};
+
+    // informações principais
+    personagem.id = resultado.id;
+    personagem.nome = resultado.nome || "";
+
+    personagemIdBanco = resultado.id;
+
+    // garante estrutura da ficha
     garantirEstrutura();
+
+    // configura interface
+    preencherOpcoesNux();
     configurarTabs();
     configurarEventos();
-    preencherOpcoesNux();
+
+    // desenha ficha
     preencherTela();
+
   } catch (erro) {
-    console.error(erro);
-    alert("Erro ao carregar personagem.");
+
+    console.error("Erro ao carregar personagem:", erro);
+    alert("Erro ao carregar personagem");
+
     window.location.href = "personagens.html";
+
   }
+
 }
+
+
+
+async function salvarTudo() {
+
+  if (!personagemIdBanco) return;
+
+  try {
+
+    await fetch(`${API}/personagens/ficha/${personagemIdBanco}`, {
+
+      method: "PUT",
+
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`
+      },
+
+      body: JSON.stringify({
+        nome: personagem.nome || "Personagem",
+        dados: personagem
+      })
+
+    });
+
+  } catch (erro) {
+
+    console.error("Erro ao salvar ficha:", erro);
+
+  }
+
+}
+
+
+
+// aplica dano
+function aplicarDano(tipo) {
+
+  const campo = document.getElementById(tipo + "Dano");
+
+  const valor = Number(campo.value);
+
+  if (!valor) return;
+
+  personagem.recursos[tipo + "Atual"] -= valor;
+
+  campo.value = "";
+
+  salvarTudo();
+
+}
+
+
+
+// aplica cura
+function aplicarCura(tipo) {
+
+  const campo = document.getElementById(tipo + "Cura");
+
+  const valor = Number(campo.value);
+
+  if (!valor) return;
+
+  personagem.recursos[tipo + "Atual"] += valor;
+
+  campo.value = "";
+
+  salvarTudo();
+
+}
+
+
+
+// imagem do personagem
+async function aoEscolherImagemPersonagem(e) {
+
+  const file = e.target.files[0];
+
+  if (!file) return;
+
+  const reader = new FileReader();
+
+  reader.onload = function () {
+
+    personagem.imagem = reader.result;
+
+    salvarTudo();
+
+  };
+
+  reader.readAsDataURL(file);
+
+}
+
+
+
+// remover imagem
+function removerImagemPersonagem() {
+
+  personagem.imagem = "";
+
+  salvarTudo();
+
+}
+
+
+
+// voltar para lista
+function voltarPersonagens() {
+
+  window.location.href = "personagens.html";
+
+}
+
+
+
+// compartilhar ficha
+function compartilharFicha() {
+
+  const link = window.location.href;
+
+  navigator.clipboard.writeText(link);
+
+  alert("Link da ficha copiado!");
+
+}
+
+
+
+// inicia carregamento
+carregarPersonagemDaAPI();
+
   const CATALOGO_ARMAS = [
     { nome:"Arco", categoria:"0", peso:1, resumo:"1d6 | x2", detalhes:"Tipo: Perfuração\nEmpunhadura: Duas Mãos\nAlcance: Média", ammoType:null },
     { nome:"Bastão de Beisebol", categoria:"0", peso:2, resumo:"1d8 | x2", detalhes:"Tipo: Impacto\nEmpunhadura: Duas Mãos\nAlcance: Curto", ammoType:null },
@@ -2208,39 +2366,7 @@ function salvarTudo() {
     });
   }
 
-  async function carregarPersonagemDaAPI() { try {
-
-    const resposta = await fetch(`${API}/personagens/ficha/${idAtual}`, {
-      headers: {
-        Authorization: `Bearer ${token}`
-      }
-    });
-
-    if (!resposta.ok) {
-      alert("Nenhum personagem encontrado.");
-      window.location.href = "personagens.html";
-      return;
-    }
-
-    const resultado = await resposta.json();
-
-    personagem = resultado.dados || {};
-    personagem.id = resultado.id;
-    personagem.nome = resultado.nome;
-
-    garantirEstrutura();
-    configurarTabs();
-    configurarEventos();
-    preencherOpcoesNux();
-    preencherTela();
-
-} catch (erro) {
-
-    console.error(erro);
-    alert("Erro ao carregar personagem.");
-    window.location.href = "personagens.html";
-
-} }
+  carregarPersonagemDaAPI();
 
 async function compartilharFicha() {
 
