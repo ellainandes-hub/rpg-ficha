@@ -1,0 +1,29 @@
+# Query: localhost:3000
+# ContextLines: 1
+
+6 resultados - 6 arquivos
+
+rpg-ficha/js/ficha-preload.js:
+  1: const API = "http://localhost:3000";
+  2  
+
+rpg-ficha/js/ficha-sync.js:
+  1: const API_FICHA = "http://localhost:3000";
+  2  
+
+rpg-ficha/js/ficha.js:
+  1: const API = "http://localhost:3000"
+  2  
+
+rpg-ficha/js/personagens.js:
+  1: const API = "http://localhost:3000"
+  2  
+
+rpg-ficha/js/vuzualizar.js:
+  1: const API = "http://localhost:3000";
+  2  
+
+rpg-ficha/pages/ficha.html:
+  2194  
+  2195:     const resposta = await fetch(`http://localhost:3000/personagens/compartilhar/${idBanco}`, {
+  2196        method: "POST"

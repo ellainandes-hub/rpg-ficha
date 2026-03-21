@@ -1,4 +1,4 @@
-const API_FICHA = "http://localhost:3000";
+const API_FICHA = "http://https://rpg-ficha-api.onrender.com";
 
 let timeoutSalvarBanco = null;
 

@@ -1,4 +1,4 @@
-const API = "http://localhost:3000";
+const API = "http://https://rpg-ficha-api.onrender.com";
 
 (function carregarPersonagemDoBancoAntesDaFicha() {
     const personagemId = Number(localStorage.getItem("personagemAtual"));
