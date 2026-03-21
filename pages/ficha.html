@@ -2208,7 +2208,39 @@ function salvarTudo() {
     });
   }
 
-  carregarPersonagemDaAPI();
+  async function carregarPersonagemDaAPI() { try {
+
+    const resposta = await fetch(`${API}/personagens/ficha/${idAtual}`, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+
+    if (!resposta.ok) {
+      alert("Nenhum personagem encontrado.");
+      window.location.href = "personagens.html";
+      return;
+    }
+
+    const resultado = await resposta.json();
+
+    personagem = resultado.dados || {};
+    personagem.id = resultado.id;
+    personagem.nome = resultado.nome;
+
+    garantirEstrutura();
+    configurarTabs();
+    configurarEventos();
+    preencherOpcoesNux();
+    preencherTela();
+
+} catch (erro) {
+
+    console.error(erro);
+    alert("Erro ao carregar personagem.");
+    window.location.href = "personagens.html";
+
+} }
 
 async function compartilharFicha() {
 
