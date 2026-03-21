@@ -1155,15 +1155,48 @@
 <script src="../js/ficha-sync.js"></script>
 
 <script>
-  const personagens = JSON.parse(localStorage.getItem("personagens")) || [];
-  const idAtual = Number(localStorage.getItem("personagemAtual"));
-  let personagem = personagens[idAtual];
+const API = "https://rpg-ficha-api.onrender.com";
+const token = localStorage.getItem("token");
+const idAtual = localStorage.getItem("personagemAtual");
 
-  if (!personagem) {
-    alert("Nenhum personagem encontrado.");
+let personagem = null;
+
+if (!token) {
+  window.location.href = "../index.html";
+}
+
+if (!idAtual) {
+  alert("Nenhum personagem encontrado.");
+  window.location.href = "personagens.html";
+}
+
+async function carregarPersonagemDaAPI() {
+  try {
+    const resposta = await fetch(`${API}/personagens/ficha/${idAtual}`, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+
+    if (!resposta.ok) {
+      alert("Nenhum personagem encontrado.");
+      window.location.href = "personagens.html";
+      return;
+    }
+
+    personagem = await resposta.json();
+
+    garantirEstrutura();
+    configurarTabs();
+    configurarEventos();
+    preencherOpcoesNux();
+    preencherTela();
+  } catch (erro) {
+    console.error(erro);
+    alert("Erro ao carregar personagem.");
     window.location.href = "personagens.html";
   }
-
+}
   const CATALOGO_ARMAS = [
     { nome:"Arco", categoria:"0", peso:1, resumo:"1d6 | x2", detalhes:"Tipo: Perfuração\nEmpunhadura: Duas Mãos\nAlcance: Média", ammoType:null },
     { nome:"Bastão de Beisebol", categoria:"0", peso:2, resumo:"1d8 | x2", detalhes:"Tipo: Impacto\nEmpunhadura: Duas Mãos\nAlcance: Curto", ammoType:null },
@@ -2175,11 +2208,7 @@ function salvarTudo() {
     });
   }
 
-  garantirEstrutura();
-  configurarTabs();
-  configurarEventos();
-  preencherOpcoesNux();
-  preencherTela();
+  carregarPersonagemDaAPI();
 
 async function compartilharFicha() {
 

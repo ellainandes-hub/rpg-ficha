@@ -1,4 +1,4 @@
-const API = "http://https://rpg-ficha-api.onrender.com"
+const API = "https://rpg-ficha-api.onrender.com";
 
 const personagemId = localStorage.getItem("personagemAtual")
 
