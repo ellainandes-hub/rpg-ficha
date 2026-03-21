@@ -1,38 +1,27 @@
-const API = "http://https://rpg-ficha-api.onrender.com"
+const API = "https://rpg-ficha-api.onrender.com";
 
-const token = localStorage.getItem("token")
+const token = localStorage.getItem("token");
 
 if (!token) {
-
-    window.location.href = "../index.html"
-
+    window.location.href = "../index.html";
 }
-
-
 
 function pegarUsuarioId() {
-
-    const payload = JSON.parse(atob(token.split(".")[1]))
-
-    return payload.id
-
+    const payload = JSON.parse(atob(token.split(".")[1]));
+    return payload.id;
 }
-
-
 
 async function carregarPersonagens() {
 
-    const usuarioId = pegarUsuarioId()
+    const usuarioId = pegarUsuarioId();
 
-    const resposta = await fetch(`${API}/personagens/${usuarioId}`)
+    const resposta = await fetch(`${API}/personagens/${usuarioId}`);
 
-    const personagens = await resposta.json()
+    const personagens = await resposta.json();
 
-    const lista = document.getElementById("listaPersonagens")
+    const lista = document.getElementById("listaPersonagens");
 
-    lista.innerHTML = ""
-
-
+    lista.innerHTML = "";
 
     personagens.forEach(p => {
 
@@ -52,25 +41,21 @@ async function carregarPersonagens() {
 
         </div>
         
-        `
+        `;
 
-    })
+    });
 
 }
 
-
-
 async function criarPersonagem() {
 
-    const nome = prompt("Nome do personagem")
+    const nome = prompt("Nome do personagem");
 
-    if (!nome) return
+    if (!nome) return;
 
-    const usuario_id = pegarUsuarioId()
+    const usuario_id = pegarUsuarioId();
 
-    const dados = {}
-
-
+    const dados = {};
 
     await fetch(`${API}/personagens/criar`, {
 
@@ -86,40 +71,28 @@ async function criarPersonagem() {
             dados
         })
 
-    })
+    });
 
-
-
-    carregarPersonagens()
+    carregarPersonagens();
 
 }
-
-
 
 async function excluirPersonagem(id) {
 
     await fetch(`${API}/personagens/${id}`, {
-
         method: "DELETE"
+    });
 
-    })
-
-
-
-    carregarPersonagens()
+    carregarPersonagens();
 
 }
-
-
 
 function abrirFicha(id) {
 
-    localStorage.setItem("personagemAtual", id)
+    localStorage.setItem("personagemAtual", id);
 
-    window.location.href = "ficha.html"
+    window.location.href = "ficha.html";
 
 }
 
-
-
-carregarPersonagens()
+carregarPersonagens();
