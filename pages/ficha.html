@@ -2147,21 +2147,38 @@ ${r.descricao || "Sem descrição."}`;
     });
   }
 
-  function renderizarInventario() {
-    renderListaInventario("armas", "listaArmas");
-    renderListaInventario("municoes", "listaMunicoes");
-    renderListaInventario("protecoes", "listaProtecoes");
-    renderListaInventario("cura", "listaCura");
-    renderListaInventario("geral", "listaGeral");
-    renderListaInventario("corrompidos", "listaCorrompidos");
+async function salvarTudo() {
+
+  if (!personagemIdBanco) return;
+
+  try {
+
+    recalcularPesoInventario();
+
+    await fetch(`${API}/personagens/ficha/${personagemIdBanco}`, {
+
+      method: "PUT",
+
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`
+      },
+
+      body: JSON.stringify({
+        nome: personagem.nome || "Personagem",
+        dados: personagem
+      })
+
+    });
+
+    preencherTela();
+
+  } catch (erro) {
+
+    console.error("Erro ao salvar ficha:", erro);
+
   }
 
-function salvarTudo() {
-  recalcularPesoInventario();
-  personagens[idAtual] = personagem;
-  localStorage.setItem("personagens", JSON.stringify(personagens));
-  salvarFichaNoBanco(personagem);
-  preencherTela();
 }
 
   function preencherTela() {
@@ -2368,7 +2385,7 @@ function salvarTudo() {
 
 async function compartilharFicha() {
 
-  const idBanco = personagem?.idBanco || Number(localStorage.getItem("personagemAtual"));
+  const idBanco = personagemIdBanco;
 
   if (!idBanco && idBanco !== 0) {
     alert("ID da ficha não encontrado.");
@@ -2377,7 +2394,7 @@ async function compartilharFicha() {
 
   try {
 
-    const resposta = await fetch(`http://https://rpg-ficha-api.onrender.com/personagens/compartilhar/${idBanco}`, {
+    const resposta = await fetch(`https://rpg-ficha-api.onrender.com/personagens/compartilhar/${idBanco}`, {
       method: "POST"
     });
 
