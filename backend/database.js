@@ -1,13 +1,17 @@
 const { Pool } = require("pg");
 const bcrypt = require("bcryptjs");
 
-const connectionString = process.env.DATABASE_URL || "postgresql://postgres:postgres@localhost:5432/rpgficha";
+const connectionString = process.env.DATABASE_URL;
+
+if (!connectionString) {
+  throw new Error("DATABASE_URL não definida no ambiente.");
+}
 
 const pool = new Pool({
   connectionString,
-  ssl: process.env.DATABASE_URL
-    ? { rejectUnauthorized: false }
-    : false
+  ssl: {
+    rejectUnauthorized: false
+  }
 });
 
 async function initDatabase() {
@@ -17,9 +21,9 @@ async function initDatabase() {
     await client.query(`
       CREATE TABLE IF NOT EXISTS usuarios (
         id SERIAL PRIMARY KEY,
-        usuario TEXT UNIQUE NOT NULL,
-        senha TEXT UNIQUE NOT NULL,
-        tipo TEXT NOT NULL
+        usuario VARCHAR(100) UNIQUE NOT NULL,
+        senha VARCHAR(255) NOT NULL,
+        tipo VARCHAR(20) DEFAULT 'jogador'
       )
     `);
 
@@ -27,16 +31,8 @@ async function initDatabase() {
       CREATE TABLE IF NOT EXISTS personagens (
         id SERIAL PRIMARY KEY,
         usuario_id INTEGER REFERENCES usuarios(id) ON DELETE CASCADE,
-        nome TEXT,
-        dados JSONB DEFAULT '{}'::jsonb
-      )
-    `);
-
-    await client.query(`
-      CREATE TABLE IF NOT EXISTS compartilhamentos (
-        id SERIAL PRIMARY KEY,
-        personagem_id INTEGER REFERENCES personagens(id) ON DELETE CASCADE,
-        token TEXT UNIQUE NOT NULL
+        nome VARCHAR(150) NOT NULL,
+        dados JSONB NOT NULL DEFAULT '{}'::jsonb
       )
     `);
 
