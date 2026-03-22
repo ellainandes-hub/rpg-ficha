@@ -1,4 +1,4 @@
-const API = "http://https://rpg-ficha-api.onrender.com";
+const API_PRELOAD = "https://rpg-ficha-api.onrender.com";
 
 (function carregarPersonagemDoBancoAntesDaFicha() {
     const personagemId = Number(localStorage.getItem("personagemAtual"));
@@ -122,7 +122,7 @@ const API = "http://https://rpg-ficha-api.onrender.com";
 
     try {
         const xhr = new XMLHttpRequest();
-        xhr.open("GET", `${API}/personagens/ficha/${personagemId}`, false);
+        xhr.open("GET", `${API_PRELOAD}/personagens/ficha/${personagemId}`, false);
         xhr.send(null);
 
         if (xhr.status < 200 || xhr.status >= 300) {
@@ -137,7 +137,7 @@ const API = "http://https://rpg-ficha-api.onrender.com";
         personagemFinal.nome = personagemFinal.nome || registro.nome || "Sem nome";
         personagemFinal.idBanco = registro.id;
 
-        const personagens = JSON.parse(localStorage.getItem("personagens")) || [];
+        let personagens = JSON.parse(localStorage.getItem("personagens")) || {};
         personagens[personagemId] = personagemFinal;
 
         localStorage.setItem("personagens", JSON.stringify(personagens));
